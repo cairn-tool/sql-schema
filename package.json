@@ -26,7 +26,9 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "prepare": "husky",
-    "spec:lint": "node scripts/spec-lint.mjs"
+    "spec:lint": "node scripts/spec-lint.mjs",
+    "codegen:check": "node scripts/codegen.mjs --check",
+    "codegen": "node scripts/codegen.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
@@ -36,6 +38,7 @@
     "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
+    "json-schema-to-typescript": "^16.0.0",
     "prettier": "^3.4.0",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.68.0"

@@ -90,6 +90,18 @@ function walk(node, path, { inAdditional = false, isRoot = false } = {}) {
   }
 
   if (node.$ref) {
+    // A $ref may legally carry siblings in 2020-12, and they apply -- which is exactly the
+    // problem. json-schema-to-typescript treats `{ $ref, description }` as a derived schema and
+    // emits a renamed duplicate (SqlDataType1); the C# emitter ignores siblings outright and
+    // returns the referenced name. The two languages then disagree about type identity, which is
+    // the one thing this format cannot afford. Put the prose on the owning definition instead.
+    const siblings = Object.keys(node).filter((key) => key !== "$ref");
+    if (siblings.length > 0) {
+      fail(
+        path,
+        `is a \`$ref\` carrying sibling key(s) \`${siblings.join("`, `")}\`; TypeScript codegen forks a duplicate type for these while the C# emitter ignores them, so the two languages stop agreeing on type names`,
+      );
+    }
     if (!node.$ref.startsWith("#/$defs/")) {
       fail(path, `has \`$ref: "${node.$ref}"\`; only local #/$defs/ references are supported`);
     } else if (!schema.$defs?.[node.$ref.slice("#/$defs/".length)]) {

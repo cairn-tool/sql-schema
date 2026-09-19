@@ -298,7 +298,7 @@
     "constraint": {
       "title": "SqlConstraint",
       "type": "object",
-      "description": "A constraint of any kind, including DEFAULT. Defaults are modelled here rather than as a column member because they are named, and those names appear in deploy scripts and drift reports.",
+      "description": "A constraint of any kind, including DEFAULT. Defaults are modelled here rather than as a column member because they are named, and those names appear in deploy scripts and drift reports. `columns` holds the key columns in order for primaryKey, unique and foreignKey; the single defaulted column for default; and the columns the predicate names, possibly empty, for check.",
       "required": ["name", "kind", "columns"],
       "properties": {
         "name": {
@@ -307,10 +307,7 @@
         },
         "kind": { "$ref": "#/$defs/constraintKind" },
         "description": { "type": "string" },
-        "columns": {
-          "$ref": "#/$defs/columnNames",
-          "description": "Key columns in order for primaryKey, unique and foreignKey; the single defaulted column for default; the columns the predicate names, possibly empty, for check."
-        },
+        "columns": { "$ref": "#/$defs/columnNames" },
         "expression": {
           "type": "string",
           "description": "Present for check and default. Opaque engine-normalized text; see `computedColumn.expression`."
@@ -324,23 +321,20 @@
     "foreignKeyReference": {
       "title": "SqlForeignKeyReference",
       "type": "object",
-      "description": "The target of a foreign key.",
+      "description": "The target of a foreign key. Its `columns` are bare names in the referenced table, paired positionally with the constraint's own `columns`.",
       "required": ["table", "columns"],
       "properties": {
         "table": {
           "type": "string",
           "description": "Id of the referenced table."
         },
-        "columns": {
-          "$ref": "#/$defs/columnNames",
-          "description": "Bare column names in the referenced table, paired positionally with the constraint's own `columns`."
-        }
+        "columns": { "$ref": "#/$defs/columnNames" }
       }
     },
     "index": {
       "title": "SqlIndex",
       "type": "object",
-      "description": "An index. Physical storage choices -- clustering, fill factor, compression -- are engine-specific and live in `extensions` rather than here.",
+      "description": "An index. Physical storage choices -- clustering, fill factor, compression -- are engine-specific and live in `extensions` rather than here. `includedColumns` holds non-key columns carried in the leaf level, and is omitted when empty.",
       "required": ["name", "unique", "columns"],
       "properties": {
         "name": { "type": ["string", "null"] },
@@ -351,10 +345,7 @@
           "description": "Key columns in index order.",
           "items": { "$ref": "#/$defs/indexColumn" }
         },
-        "includedColumns": {
-          "$ref": "#/$defs/columnNames",
-          "description": "Non-key columns carried in the leaf level. Omitted when empty."
-        },
+        "includedColumns": { "$ref": "#/$defs/columnNames" },
         "filter": {
           "type": "string",
           "description": "Predicate of a filtered or partial index. Omitted when the index covers every row."
@@ -419,7 +410,7 @@
     "routine": {
       "title": "SqlRoutine",
       "type": "object",
-      "description": "A procedure, function or aggregate, as a signature. The body is never recorded.",
+      "description": "A procedure, function or aggregate, as a signature. The body is never recorded. `returns` is non-null only for a scalar function.",
       "required": ["id", "path", "kind", "description", "parameters", "returns", "resultColumns"],
       "properties": {
         "id": { "type": "string" },
@@ -431,10 +422,7 @@
           "description": "Parameters in declared order.",
           "items": { "$ref": "#/$defs/parameter" }
         },
-        "returns": {
-          "$ref": "#/$defs/routineReturn",
-          "description": "Non-null only for a scalar function."
-        },
+        "returns": { "$ref": "#/$defs/routineReturn" },
         "resultColumns": {
           "type": ["array", "null"],
           "description": "Result columns of a table-valued function. Always empty for a procedure: a procedure's result set is not part of any compiled model, at any fidelity.",
@@ -517,7 +505,7 @@
     "userDefinedType": {
       "title": "SqlUserDefinedType",
       "type": "object",
-      "description": "A user-defined type. A table type reuses the table's own column and constraint definitions, deliberately: a table type is a table shape, and a second set of definitions would drift from the first.",
+      "description": "A user-defined type. A table type reuses the table's own column and constraint definitions, deliberately: a table type is a table shape, and a second set of definitions would drift from the first. `dataType` and `nullable` are non-null only when `kind` is 'alias'; `columns` and `constraints` only when it is 'table'.",
       "required": [
         "id",
         "path",
@@ -533,10 +521,7 @@
         "path": { "$ref": "#/$defs/identifierPath" },
         "kind": { "enum": ["alias", "table", "clr"] },
         "description": { "type": ["string", "null"] },
-        "dataType": {
-          "$ref": "#/$defs/dataType",
-          "description": "Non-null only when `kind` is 'alias'."
-        },
+        "dataType": { "$ref": "#/$defs/dataType" },
         "nullable": {
           "type": ["boolean", "null"],
           "description": "Non-null only when `kind` is 'alias'."

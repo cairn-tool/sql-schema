@@ -161,12 +161,12 @@ export interface SqlTable {
   extensions?: Extensions;
 }
 /**
- * A column. Carries no derived flags: whether it is a key, a period boundary, or has a default are all facts of the table's constraints and temporal period, recorded once there.
+ * A column. Carries no derived flags: whether it is a key, a period boundary, or has a default are all facts of the table's constraints and temporal period, recorded once there. `dataType` is omitted when the source does not report one, which is the case for a computed column in a compiled model: the model records the expression and its dependencies but never resolves the resulting type.
  */
 export interface SqlColumn {
   name: string;
   description: string | null;
-  dataType: SqlDataType;
+  dataType?: SqlDataType;
   /**
    * Whether the column accepts NULL. Nullability lives here rather than on the data type, because the same type is nullable differently on a column, a parameter and a result column.
    */
@@ -285,9 +285,15 @@ export interface SqlIndex {
   filter?: string;
   extensions?: Extensions;
 }
+/**
+ * A key column of an index, in index order.
+ */
 export interface SqlIndexColumn {
   name: string;
-  descending: boolean;
+  /**
+   * Sort direction, when the source reports one. Omitted when it does not: a compiled model does not carry index sort direction, so a producer reading one leaves this absent rather than asserting ascending.
+   */
+  descending?: boolean;
 }
 /**
  * The table's period. Presence of this member is what makes a table temporal, and a history table is identified only by another table naming it here -- one fact, recorded in one place.
@@ -323,7 +329,7 @@ export interface SqlResultColumn {
   nullable: boolean;
 }
 /**
- * A procedure, function or aggregate, as a signature. The body is never recorded. `returns` is non-null only for a scalar function.
+ * A procedure, function or aggregate, as a signature. The body is never recorded. `returns` is present only for a scalar function.
  */
 export interface SqlRoutine {
   id: string;
@@ -334,7 +340,7 @@ export interface SqlRoutine {
    * Parameters in declared order.
    */
   parameters: SqlParameter[];
-  returns: SqlRoutineReturn;
+  returns?: SqlRoutineReturn;
   /**
    * Result columns of a table-valued function. Always empty for a procedure: a procedure's result set is not part of any compiled model, at any fidelity.
    */
@@ -388,26 +394,26 @@ export interface SqlSequence {
   extensions?: Extensions;
 }
 /**
- * A user-defined type. A table type reuses the table's own column and constraint definitions, deliberately: a table type is a table shape, and a second set of definitions would drift from the first. `dataType` and `nullable` are non-null only when `kind` is 'alias'; `columns` and `constraints` only when it is 'table'.
+ * A user-defined type. A table type reuses the table's own column and constraint definitions, deliberately: a table type is a table shape, and a second set of definitions would drift from the first. `dataType` and `nullable` are present only when `kind` is 'alias'; `columns` and `constraints` only when it is 'table'. Presence carries applicability here because a `$ref` cannot be made nullable without sibling keys, which would fork a duplicate type in one language and be ignored in the other.
  */
 export interface SqlUserDefinedType {
   id: string;
   path: IdentifierPath;
   kind: "alias" | "table" | "clr";
   description: string | null;
-  dataType: SqlDataType;
+  dataType?: SqlDataType;
   /**
-   * Non-null only when `kind` is 'alias'.
+   * Present only when `kind` is 'alias'.
    */
-  nullable: boolean | null;
+  nullable?: boolean;
   /**
-   * Non-null only when `kind` is 'table'.
+   * Present only when `kind` is 'table'.
    */
-  columns: SqlColumn[] | null;
+  columns?: SqlColumn[];
   /**
-   * Non-null only when `kind` is 'table'.
+   * Present only when `kind` is 'table'.
    */
-  constraints: SqlConstraint[] | null;
+  constraints?: SqlConstraint[];
   extensions?: Extensions;
 }
 export interface SqlSynonym {

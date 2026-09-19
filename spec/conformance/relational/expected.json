@@ -1,0 +1,287 @@
+{
+  "schemaVersion": "1",
+  "tool": {
+    "name": "sqlschema"
+  },
+  "engine": {
+    "name": "sqlserver",
+    "version": "12",
+    "targetPlatform": "SqlAzure",
+    "collation": null,
+    "caseSensitive": false
+  },
+  "source": {
+    "kind": "dacpac",
+    "name": "relational",
+    "version": "1.0.0.0"
+  },
+  "schemas": [
+    {
+      "id": "items",
+      "path": [
+        "items"
+      ],
+      "description": null
+    }
+  ],
+  "tables": [
+    {
+      "id": "items.SalesItem",
+      "path": [
+        "items",
+        "SalesItem"
+      ],
+      "description": null,
+      "columns": [
+        {
+          "name": "SalesItemId",
+          "description": null,
+          "dataType": {
+            "name": "bigint",
+            "userDefined": false,
+            "rendered": "bigint"
+          },
+          "nullable": false,
+          "identity": {
+            "seed": "1",
+            "increment": "1"
+          }
+        },
+        {
+          "name": "Sku",
+          "description": null,
+          "dataType": {
+            "name": "varchar",
+            "userDefined": false,
+            "length": 50,
+            "rendered": "varchar(50)"
+          },
+          "nullable": false
+        },
+        {
+          "name": "Description",
+          "description": null,
+          "dataType": {
+            "name": "varchar",
+            "userDefined": false,
+            "length": 255,
+            "rendered": "varchar(255)"
+          },
+          "nullable": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "PK_items_SalesItem",
+          "kind": "primaryKey",
+          "columns": [
+            "SalesItemId"
+          ],
+          "extensions": {
+            "sqlserver": {
+              "clustered": true
+            }
+          }
+        },
+        {
+          "name": "UQ_items_SalesItem_Sku",
+          "kind": "unique",
+          "columns": [
+            "Sku"
+          ]
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "id": "items.SalesItemDetail",
+      "path": [
+        "items",
+        "SalesItemDetail"
+      ],
+      "description": null,
+      "columns": [
+        {
+          "name": "SalesItemDetailId",
+          "description": null,
+          "dataType": {
+            "name": "bigint",
+            "userDefined": false,
+            "rendered": "bigint"
+          },
+          "nullable": false
+        },
+        {
+          "name": "SalesItemId",
+          "description": null,
+          "dataType": {
+            "name": "bigint",
+            "userDefined": false,
+            "rendered": "bigint"
+          },
+          "nullable": false
+        },
+        {
+          "name": "EffectiveDate",
+          "description": null,
+          "dataType": {
+            "name": "date",
+            "userDefined": false,
+            "rendered": "date"
+          },
+          "nullable": false
+        },
+        {
+          "name": "SupersedesId",
+          "description": null,
+          "dataType": {
+            "name": "bigint",
+            "userDefined": false,
+            "rendered": "bigint"
+          },
+          "nullable": true
+        }
+      ],
+      "constraints": [
+        {
+          "name": "FK_items_SalesItemDetail_SalesItem",
+          "kind": "foreignKey",
+          "columns": [
+            "SalesItemId"
+          ],
+          "references": {
+            "table": "items.SalesItem",
+            "columns": [
+              "SalesItemId"
+            ]
+          },
+          "onDelete": "noAction",
+          "onUpdate": "noAction"
+        },
+        {
+          "name": "FK_items_SalesItemDetail_Self",
+          "kind": "foreignKey",
+          "columns": [
+            "SupersedesId"
+          ],
+          "references": {
+            "table": "items.SalesItemDetail",
+            "columns": [
+              "SalesItemDetailId"
+            ]
+          },
+          "onDelete": "noAction",
+          "onUpdate": "noAction"
+        },
+        {
+          "name": "PK_items_SalesItemDetail",
+          "kind": "primaryKey",
+          "columns": [
+            "SalesItemDetailId"
+          ],
+          "extensions": {
+            "sqlserver": {
+              "clustered": true
+            }
+          }
+        },
+        {
+          "name": "UQ_items_SalesItemDetail",
+          "kind": "unique",
+          "columns": [
+            "SalesItemId",
+            "EffectiveDate"
+          ]
+        }
+      ],
+      "indexes": [
+        {
+          "name": "IX_items_SalesItemDetail_Effective",
+          "unique": false,
+          "columns": [
+            {
+              "name": "EffectiveDate"
+            }
+          ],
+          "includedColumns": [
+            "SalesItemId"
+          ],
+          "filter": "[SupersedesId] IS NULL"
+        }
+      ]
+    },
+    {
+      "id": "items.SalesItemTag",
+      "path": [
+        "items",
+        "SalesItemTag"
+      ],
+      "description": null,
+      "columns": [
+        {
+          "name": "SalesItemId",
+          "description": null,
+          "dataType": {
+            "name": "bigint",
+            "userDefined": false,
+            "rendered": "bigint"
+          },
+          "nullable": false
+        },
+        {
+          "name": "Tag",
+          "description": null,
+          "dataType": {
+            "name": "varchar",
+            "userDefined": false,
+            "length": 40,
+            "rendered": "varchar(40)"
+          },
+          "nullable": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "CK_items_SalesItemTag_Tag",
+          "kind": "check",
+          "columns": [],
+          "expression": "LEN([Tag]) > 0"
+        },
+        {
+          "name": "FK_items_SalesItemTag_SalesItem",
+          "kind": "foreignKey",
+          "columns": [
+            "SalesItemId"
+          ],
+          "references": {
+            "table": "items.SalesItem",
+            "columns": [
+              "SalesItemId"
+            ]
+          },
+          "onDelete": "cascade",
+          "onUpdate": "noAction"
+        },
+        {
+          "name": "PK_items_SalesItemTag",
+          "kind": "primaryKey",
+          "columns": [
+            "SalesItemId"
+          ],
+          "extensions": {
+            "sqlserver": {
+              "clustered": true
+            }
+          }
+        }
+      ],
+      "indexes": []
+    }
+  ],
+  "views": [],
+  "routines": [],
+  "sequences": [],
+  "userDefinedTypes": [],
+  "synonyms": [],
+  "triggers": []
+}

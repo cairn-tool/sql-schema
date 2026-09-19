@@ -12,3 +12,8 @@ CHANGELOG.md
 # SQL sources and MSBuild project files are not Prettier's to format, and the
 # fixture tree deliberately mirrors the estate's own formatting rather than ours.
 spec/fixtures/**
+
+# Conformance goldens are byte-compared against the canonicalizer's own output. Formatting them
+# with anything else would rewrite them out from under that comparison, and every golden would
+# fail for a reason that has nothing to do with the schema.
+spec/conformance/

@@ -3,6 +3,7 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="Microsoft.SqlServer.DacFx" Version="170.5.96" />
     <!-- DO NOT UPGRADE PAST VERSION 6.12.0 OF FluentAssertions: The library changed to a proprietary license after that version -->
     <PackageVersion Include="FluentAssertions" Version="6.12.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />

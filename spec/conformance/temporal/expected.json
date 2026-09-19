@@ -1,0 +1,422 @@
+{
+  "schemaVersion": "1",
+  "tool": {
+    "name": "sqlschema"
+  },
+  "engine": {
+    "name": "sqlserver",
+    "version": "12",
+    "targetPlatform": "SqlAzure",
+    "collation": null,
+    "caseSensitive": false
+  },
+  "source": {
+    "kind": "dacpac",
+    "name": "temporal",
+    "version": "1.0.0.0"
+  },
+  "schemas": [
+    {
+      "id": "cfg",
+      "path": [
+        "cfg"
+      ],
+      "description": null
+    }
+  ],
+  "tables": [
+    {
+      "id": "cfg.StoreConfiguration",
+      "path": [
+        "cfg",
+        "StoreConfiguration"
+      ],
+      "description": null,
+      "columns": [
+        {
+          "name": "StoreConfigurationId",
+          "description": null,
+          "dataType": {
+            "name": "bigint",
+            "userDefined": false,
+            "rendered": "bigint"
+          },
+          "nullable": false,
+          "identity": {
+            "seed": "1",
+            "increment": "1"
+          }
+        },
+        {
+          "name": "StoreNumber",
+          "description": null,
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": false
+        },
+        {
+          "name": "EffectiveDate",
+          "description": null,
+          "dataType": {
+            "name": "date",
+            "userDefined": false,
+            "rendered": "date"
+          },
+          "nullable": false
+        },
+        {
+          "name": "ExpirationDate",
+          "description": null,
+          "dataType": {
+            "name": "date",
+            "userDefined": false,
+            "rendered": "date"
+          },
+          "nullable": true
+        },
+        {
+          "name": "ConfigurationData",
+          "description": null,
+          "dataType": {
+            "name": "varchar",
+            "userDefined": false,
+            "maxLength": true,
+            "rendered": "varchar(max)"
+          },
+          "nullable": false
+        },
+        {
+          "name": "StoreStatusFlags",
+          "description": null,
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": false
+        },
+        {
+          "name": "ConfigurationDataVersion",
+          "description": null,
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": false
+        },
+        {
+          "name": "RowCreatedDateTime",
+          "description": null,
+          "dataType": {
+            "name": "datetimeoffset",
+            "userDefined": false,
+            "scale": 7,
+            "rendered": "datetimeoffset(7)"
+          },
+          "nullable": false
+        },
+        {
+          "name": "RowCreatedBy",
+          "description": null,
+          "dataType": {
+            "name": "varchar",
+            "userDefined": false,
+            "length": 125,
+            "rendered": "varchar(125)"
+          },
+          "nullable": false
+        },
+        {
+          "name": "RowModifiedDateTime",
+          "description": null,
+          "dataType": {
+            "name": "datetimeoffset",
+            "userDefined": false,
+            "scale": 7,
+            "rendered": "datetimeoffset(7)"
+          },
+          "nullable": false
+        },
+        {
+          "name": "RowModifiedBy",
+          "description": null,
+          "dataType": {
+            "name": "varchar",
+            "userDefined": false,
+            "length": 125,
+            "rendered": "varchar(125)"
+          },
+          "nullable": false
+        },
+        {
+          "name": "ValidFrom",
+          "description": null,
+          "dataType": {
+            "name": "datetime2",
+            "userDefined": false,
+            "scale": 7,
+            "rendered": "datetime2(7)"
+          },
+          "nullable": false
+        },
+        {
+          "name": "ValidTo",
+          "description": null,
+          "dataType": {
+            "name": "datetime2",
+            "userDefined": false,
+            "scale": 7,
+            "rendered": "datetime2(7)"
+          },
+          "nullable": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "DF_cfg_StoreConfiguration_ConfigurationDataVersion",
+          "kind": "default",
+          "columns": [
+            "ConfigurationDataVersion"
+          ],
+          "expression": "((0))"
+        },
+        {
+          "name": "DF_cfg_StoreConfiguration_RowCreatedBy",
+          "kind": "default",
+          "columns": [
+            "RowCreatedBy"
+          ],
+          "expression": "(SUSER_SNAME())"
+        },
+        {
+          "name": "DF_cfg_StoreConfiguration_RowCreatedDateTime",
+          "kind": "default",
+          "columns": [
+            "RowCreatedDateTime"
+          ],
+          "expression": "(SYSDATETIMEOFFSET())"
+        },
+        {
+          "name": "DF_cfg_StoreConfiguration_RowModifiedBy",
+          "kind": "default",
+          "columns": [
+            "RowModifiedBy"
+          ],
+          "expression": "(SUSER_SNAME())"
+        },
+        {
+          "name": "DF_cfg_StoreConfiguration_RowModifiedDateTime",
+          "kind": "default",
+          "columns": [
+            "RowModifiedDateTime"
+          ],
+          "expression": "(SYSDATETIMEOFFSET())"
+        },
+        {
+          "name": "DF_cfg_StoreConfiguration_StoreStatusFlags",
+          "kind": "default",
+          "columns": [
+            "StoreStatusFlags"
+          ],
+          "expression": "((0))"
+        },
+        {
+          "name": "PK_cfg_StoreConfigurationId",
+          "kind": "primaryKey",
+          "columns": [
+            "StoreConfigurationId"
+          ],
+          "extensions": {
+            "sqlserver": {
+              "clustered": true
+            }
+          }
+        }
+      ],
+      "indexes": [],
+      "temporal": {
+        "kind": "systemVersioned",
+        "periodStartColumn": "ValidFrom",
+        "periodEndColumn": "ValidTo",
+        "historyTable": "cfg.StoreConfigurationHistory"
+      }
+    },
+    {
+      "id": "cfg.StoreConfigurationHistory",
+      "path": [
+        "cfg",
+        "StoreConfigurationHistory"
+      ],
+      "description": null,
+      "columns": [
+        {
+          "name": "StoreConfigurationId",
+          "description": null,
+          "dataType": {
+            "name": "bigint",
+            "userDefined": false,
+            "rendered": "bigint"
+          },
+          "nullable": false
+        },
+        {
+          "name": "StoreNumber",
+          "description": null,
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": false
+        },
+        {
+          "name": "EffectiveDate",
+          "description": null,
+          "dataType": {
+            "name": "date",
+            "userDefined": false,
+            "rendered": "date"
+          },
+          "nullable": false
+        },
+        {
+          "name": "ExpirationDate",
+          "description": null,
+          "dataType": {
+            "name": "date",
+            "userDefined": false,
+            "rendered": "date"
+          },
+          "nullable": true
+        },
+        {
+          "name": "ConfigurationData",
+          "description": null,
+          "dataType": {
+            "name": "varchar",
+            "userDefined": false,
+            "maxLength": true,
+            "rendered": "varchar(max)"
+          },
+          "nullable": false
+        },
+        {
+          "name": "StoreStatusFlags",
+          "description": null,
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": false
+        },
+        {
+          "name": "ConfigurationDataVersion",
+          "description": null,
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": false
+        },
+        {
+          "name": "RowCreatedDateTime",
+          "description": null,
+          "dataType": {
+            "name": "datetimeoffset",
+            "userDefined": false,
+            "scale": 7,
+            "rendered": "datetimeoffset(7)"
+          },
+          "nullable": false
+        },
+        {
+          "name": "RowCreatedBy",
+          "description": null,
+          "dataType": {
+            "name": "varchar",
+            "userDefined": false,
+            "length": 125,
+            "rendered": "varchar(125)"
+          },
+          "nullable": false
+        },
+        {
+          "name": "RowModifiedDateTime",
+          "description": null,
+          "dataType": {
+            "name": "datetimeoffset",
+            "userDefined": false,
+            "scale": 7,
+            "rendered": "datetimeoffset(7)"
+          },
+          "nullable": false
+        },
+        {
+          "name": "RowModifiedBy",
+          "description": null,
+          "dataType": {
+            "name": "varchar",
+            "userDefined": false,
+            "length": 125,
+            "rendered": "varchar(125)"
+          },
+          "nullable": false
+        },
+        {
+          "name": "ValidFrom",
+          "description": null,
+          "dataType": {
+            "name": "datetime2",
+            "userDefined": false,
+            "scale": 7,
+            "rendered": "datetime2(7)"
+          },
+          "nullable": false
+        },
+        {
+          "name": "ValidTo",
+          "description": null,
+          "dataType": {
+            "name": "datetime2",
+            "userDefined": false,
+            "scale": 7,
+            "rendered": "datetime2(7)"
+          },
+          "nullable": false
+        }
+      ],
+      "constraints": [],
+      "indexes": [
+        {
+          "name": "ix_StoreConfigurationHistory",
+          "unique": false,
+          "columns": [
+            {
+              "name": "ValidTo"
+            },
+            {
+              "name": "ValidFrom"
+            }
+          ],
+          "extensions": {
+            "sqlserver": {
+              "clustered": true
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "views": [],
+  "routines": [],
+  "sequences": [],
+  "userDefinedTypes": [],
+  "synonyms": [],
+  "triggers": []
+}

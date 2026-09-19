@@ -83,6 +83,31 @@ table is the authority; this producer applies it.
 `collation` comes from `Column.Collation` and is emitted only when it differs from the model
 collation.
 
+### What the model does not resolve
+
+Three facts are simply absent from a compiled model, and the producer omits rather than invents:
+
+- **A computed column has no data type.** Its `DataType` relationship is empty; the model records
+  only the expression and the columns it depends on. `dataType` is therefore omitted, and the
+  column's nullability comes from `PersistedNullable`, defaulting to nullable.
+- **A scalar function's return facets.** `ScalarFunction.ReturnType` hands back the base type
+  object and nothing else, so a function declared `RETURNS NVARCHAR(80)` records `nvarchar`. The
+  producer passes "facets not known" rather than zeros, because zeros would render `nvarchar(0)` —
+  wrong rather than merely unhelpful.
+- **Index sort direction**, as above.
+
+### Reading properties safely
+
+Two normal conditions both look like failures through the obvious API:
+
+- `TSqlObject.GetProperty<T>` throws `NullReferenceException` when a property is simply **unset** on
+  an element — a primary key has no `FillFactor` unless one was declared. The non-generic
+  `GetProperty` returns `null` instead, and is what this producer uses everywhere.
+- The same concept is several model types. A table's column is `Column`; a table type's column is
+  `TableTypeColumn`, which does not support `IsHidden` at all and throws `DacModelException` when
+  asked. Every property and relationship read is funnelled through one pair of helpers so both
+  cases are handled once.
+
 ## Constraints
 
 | Core `kind`  | Source                           |
@@ -107,8 +132,14 @@ format nests them instead.
 
 ## Indexes
 
-`Index.TypeClass`. `columns` from `ColumnSpecifications` with each specification's `Descending`;
-`includedColumns` from `IncludedColumns`; `filter` from `FilterPredicate`; `unique` from `Unique`.
+`Index.TypeClass`. `columns` from the `Columns` relationship, `includedColumns` from
+`IncludedColumns`, `filter` from `FilterPredicate`, `unique` from `Unique`.
+
+⚠️ **Sort direction is not available.** The public model exposes an index's columns as a plain
+relationship; its `ModelRelationshipInstance` carries only the referenced object, with no ordering
+data, and there is no `Descending` property anywhere on `Index` or its columns. `descending` is
+therefore **omitted** by this producer rather than asserted as `false`. An index declared
+`([EffectiveDate] DESC)` and one declared `([EffectiveDate])` are indistinguishable in a dacpac.
 
 An index that backs a primary key or unique constraint is **not** repeated in `indexes` — it is
 already the constraint.

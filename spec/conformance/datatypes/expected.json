@@ -1,0 +1,436 @@
+{
+  "schemaVersion": "1",
+  "tool": {
+    "name": "sqlschema"
+  },
+  "engine": {
+    "name": "sqlserver",
+    "version": "12",
+    "targetPlatform": "SqlAzure",
+    "collation": null,
+    "caseSensitive": false
+  },
+  "source": {
+    "kind": "dacpac",
+    "name": "datatypes",
+    "version": "1.0.0.0"
+  },
+  "schemas": [
+    {
+      "id": "dt",
+      "path": [
+        "dt"
+      ],
+      "description": null
+    }
+  ],
+  "tables": [
+    {
+      "id": "dt.AllTypes",
+      "path": [
+        "dt",
+        "AllTypes"
+      ],
+      "description": null,
+      "columns": [
+        {
+          "name": "Id",
+          "description": null,
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": false
+        },
+        {
+          "name": "Char1",
+          "description": null,
+          "dataType": {
+            "name": "char",
+            "userDefined": false,
+            "length": 1,
+            "rendered": "char(1)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "Varchar50",
+          "description": null,
+          "dataType": {
+            "name": "varchar",
+            "userDefined": false,
+            "length": 50,
+            "rendered": "varchar(50)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "VarcharMax",
+          "description": null,
+          "dataType": {
+            "name": "varchar",
+            "userDefined": false,
+            "maxLength": true,
+            "rendered": "varchar(max)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "NChar4",
+          "description": null,
+          "dataType": {
+            "name": "nchar",
+            "userDefined": false,
+            "length": 4,
+            "rendered": "nchar(4)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "NVarchar255",
+          "description": null,
+          "dataType": {
+            "name": "nvarchar",
+            "userDefined": false,
+            "length": 255,
+            "rendered": "nvarchar(255)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "NVarcharMax",
+          "description": null,
+          "dataType": {
+            "name": "nvarchar",
+            "userDefined": false,
+            "maxLength": true,
+            "rendered": "nvarchar(max)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "Binary8",
+          "description": null,
+          "dataType": {
+            "name": "binary",
+            "userDefined": false,
+            "length": 8,
+            "rendered": "binary(8)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "VarbinaryMax",
+          "description": null,
+          "dataType": {
+            "name": "varbinary",
+            "userDefined": false,
+            "maxLength": true,
+            "rendered": "varbinary(max)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "Decimal84",
+          "description": null,
+          "dataType": {
+            "name": "decimal",
+            "userDefined": false,
+            "precision": 8,
+            "scale": 4,
+            "rendered": "decimal(8,4)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "Decimal15",
+          "description": null,
+          "dataType": {
+            "name": "decimal",
+            "userDefined": false,
+            "precision": 15,
+            "scale": 0,
+            "rendered": "decimal(15,0)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "Numeric102",
+          "description": null,
+          "dataType": {
+            "name": "numeric",
+            "userDefined": false,
+            "precision": 10,
+            "scale": 2,
+            "rendered": "numeric(10,2)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "Float53",
+          "description": null,
+          "dataType": {
+            "name": "float",
+            "userDefined": false,
+            "precision": 53,
+            "rendered": "float(53)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "Datetime2Default",
+          "description": null,
+          "dataType": {
+            "name": "datetime2",
+            "userDefined": false,
+            "scale": 7,
+            "rendered": "datetime2(7)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "Datetime2Scale3",
+          "description": null,
+          "dataType": {
+            "name": "datetime2",
+            "userDefined": false,
+            "scale": 3,
+            "rendered": "datetime2(3)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "DatetimeOffset7",
+          "description": null,
+          "dataType": {
+            "name": "datetimeoffset",
+            "userDefined": false,
+            "scale": 7,
+            "rendered": "datetimeoffset(7)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "Time3",
+          "description": null,
+          "dataType": {
+            "name": "time",
+            "userDefined": false,
+            "scale": 3,
+            "rendered": "time(3)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "BigintCol",
+          "description": null,
+          "dataType": {
+            "name": "bigint",
+            "userDefined": false,
+            "rendered": "bigint"
+          },
+          "nullable": true
+        },
+        {
+          "name": "SmallintCol",
+          "description": null,
+          "dataType": {
+            "name": "smallint",
+            "userDefined": false,
+            "rendered": "smallint"
+          },
+          "nullable": true
+        },
+        {
+          "name": "TinyintCol",
+          "description": null,
+          "dataType": {
+            "name": "tinyint",
+            "userDefined": false,
+            "rendered": "tinyint"
+          },
+          "nullable": true
+        },
+        {
+          "name": "BitCol",
+          "description": null,
+          "dataType": {
+            "name": "bit",
+            "userDefined": false,
+            "rendered": "bit"
+          },
+          "nullable": true
+        },
+        {
+          "name": "DateCol",
+          "description": null,
+          "dataType": {
+            "name": "date",
+            "userDefined": false,
+            "rendered": "date"
+          },
+          "nullable": true
+        },
+        {
+          "name": "DatetimeCol",
+          "description": null,
+          "dataType": {
+            "name": "datetime",
+            "userDefined": false,
+            "rendered": "datetime"
+          },
+          "nullable": true
+        },
+        {
+          "name": "SmallDatetimeCol",
+          "description": null,
+          "dataType": {
+            "name": "smalldatetime",
+            "userDefined": false,
+            "rendered": "smalldatetime"
+          },
+          "nullable": true
+        },
+        {
+          "name": "MoneyCol",
+          "description": null,
+          "dataType": {
+            "name": "money",
+            "userDefined": false,
+            "rendered": "money"
+          },
+          "nullable": true
+        },
+        {
+          "name": "SmallMoneyCol",
+          "description": null,
+          "dataType": {
+            "name": "smallmoney",
+            "userDefined": false,
+            "rendered": "smallmoney"
+          },
+          "nullable": true
+        },
+        {
+          "name": "RealCol",
+          "description": null,
+          "dataType": {
+            "name": "real",
+            "userDefined": false,
+            "rendered": "real"
+          },
+          "nullable": true
+        },
+        {
+          "name": "GuidCol",
+          "description": null,
+          "dataType": {
+            "name": "uniqueidentifier",
+            "userDefined": false,
+            "rendered": "uniqueidentifier"
+          },
+          "nullable": true
+        },
+        {
+          "name": "XmlCol",
+          "description": null,
+          "dataType": {
+            "name": "xml",
+            "userDefined": false,
+            "rendered": "xml"
+          },
+          "nullable": true
+        },
+        {
+          "name": "VariantCol",
+          "description": null,
+          "dataType": {
+            "name": "sql_variant",
+            "userDefined": false,
+            "rendered": "sql_variant"
+          },
+          "nullable": true
+        },
+        {
+          "name": "Collated",
+          "description": null,
+          "dataType": {
+            "name": "varchar",
+            "userDefined": false,
+            "length": 20,
+            "collation": "SQL_Latin1_General_CP1_CS_AS",
+            "rendered": "varchar(20)"
+          },
+          "nullable": true
+        },
+        {
+          "name": "Account",
+          "description": null,
+          "dataType": {
+            "name": "dt.AccountNumber",
+            "userDefined": true,
+            "rendered": "dt.AccountNumber"
+          },
+          "nullable": false
+        },
+        {
+          "name": "Persisted",
+          "description": null,
+          "nullable": true,
+          "computed": {
+            "expression": "([Id] * 2)",
+            "persisted": true
+          }
+        },
+        {
+          "name": "NotPersisted",
+          "description": null,
+          "nullable": true,
+          "computed": {
+            "expression": "([Id] + 1)",
+            "persisted": false
+          }
+        }
+      ],
+      "constraints": [
+        {
+          "name": "PK_dt_AllTypes",
+          "kind": "primaryKey",
+          "columns": [
+            "Id"
+          ],
+          "extensions": {
+            "sqlserver": {
+              "clustered": true
+            }
+          }
+        }
+      ],
+      "indexes": []
+    }
+  ],
+  "views": [],
+  "routines": [],
+  "sequences": [],
+  "userDefinedTypes": [
+    {
+      "id": "dt.AccountNumber",
+      "path": [
+        "dt",
+        "AccountNumber"
+      ],
+      "kind": "alias",
+      "description": null,
+      "dataType": {
+        "name": "varchar",
+        "userDefined": false,
+        "length": 24,
+        "rendered": "varchar(24)"
+      },
+      "nullable": false
+    }
+  ],
+  "synonyms": [],
+  "triggers": []
+}

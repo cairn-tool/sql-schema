@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+
+    <!-- ⚠️ The trim and AOT properties are deliberately absent, and IsTrimmable is stated false
+         rather than left to default.
+
+         IsAotCompatible is a meta-property: it turns on the trim, single-file and AOT analyzers,
+         whose warnings Directory.Build.props then turns into errors. DacFx pulls in
+         Microsoft.Data.SqlClient, Azure.Storage.Blobs and Microsoft.ApplicationInsights, none of
+         which carry trim annotations, so setting it here would not be an aspiration that degrades
+         to a warning — it would be a build failure on Microsoft's code that we cannot annotate.
+
+         Stating IsTrimmable=false explicitly matters too: a consumer who publishes trimmed gets
+         this assembly preserved whole rather than silently pruned.
+
+         Do not "tidy up the inconsistency" with CairnTool.SqlSchema. That package is clean on
+         purpose, which is the entire reason the extractor is a separate one. -->
+    <IsTrimmable>false</IsTrimmable>
+    <IsAotCompatible>false</IsAotCompatible>
+
+    <PackageId>CairnTool.SqlSchema.DacFx</PackageId>
+    <Authors>Bryan Stockus</Authors>
+    <Description>Extracts a sql-schema document from a SQL Server .dacpac using DacFx.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/cairn-tool/sql-schema</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/cairn-tool/sql-schema</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>sql;schema;dacpac;sqlserver;dacfx</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SqlServer.DacFx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CairnTool.SqlSchema\CairnTool.SqlSchema.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>

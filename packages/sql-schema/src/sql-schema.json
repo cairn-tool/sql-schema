@@ -206,12 +206,14 @@
     "column": {
       "title": "SqlColumn",
       "type": "object",
-      "description": "A column. Carries no derived flags: whether it is a key, a period boundary, or has a default are all facts of the table's constraints and temporal period, recorded once there.",
-      "required": ["name", "description", "dataType", "nullable"],
+      "description": "A column. Carries no derived flags: whether it is a key, a period boundary, or has a default are all facts of the table's constraints and temporal period, recorded once there. `dataType` is omitted when the source does not report one, which is the case for a computed column in a compiled model: the model records the expression and its dependencies but never resolves the resulting type.",
+      "required": ["name", "description", "nullable"],
       "properties": {
         "name": { "type": "string" },
         "description": { "type": ["string", "null"] },
-        "dataType": { "$ref": "#/$defs/dataType" },
+        "dataType": {
+          "$ref": "#/$defs/dataType"
+        },
         "nullable": {
           "type": "boolean",
           "description": "Whether the column accepts NULL. Nullability lives here rather than on the data type, because the same type is nullable differently on a column, a parameter and a result column."
@@ -356,10 +358,14 @@
     "indexColumn": {
       "title": "SqlIndexColumn",
       "type": "object",
-      "required": ["name", "descending"],
+      "description": "A key column of an index, in index order.",
+      "required": ["name"],
       "properties": {
         "name": { "type": "string" },
-        "descending": { "type": "boolean" }
+        "descending": {
+          "type": "boolean",
+          "description": "Sort direction, when the source reports one. Omitted when it does not: a compiled model does not carry index sort direction, so a producer reading one leaves this absent rather than asserting ascending."
+        }
       }
     },
     "temporal": {
@@ -410,8 +416,8 @@
     "routine": {
       "title": "SqlRoutine",
       "type": "object",
-      "description": "A procedure, function or aggregate, as a signature. The body is never recorded. `returns` is non-null only for a scalar function.",
-      "required": ["id", "path", "kind", "description", "parameters", "returns", "resultColumns"],
+      "description": "A procedure, function or aggregate, as a signature. The body is never recorded. `returns` is present only for a scalar function.",
+      "required": ["id", "path", "kind", "description", "parameters", "resultColumns"],
       "properties": {
         "id": { "type": "string" },
         "path": { "$ref": "#/$defs/identifierPath" },
@@ -505,17 +511,8 @@
     "userDefinedType": {
       "title": "SqlUserDefinedType",
       "type": "object",
-      "description": "A user-defined type. A table type reuses the table's own column and constraint definitions, deliberately: a table type is a table shape, and a second set of definitions would drift from the first. `dataType` and `nullable` are non-null only when `kind` is 'alias'; `columns` and `constraints` only when it is 'table'.",
-      "required": [
-        "id",
-        "path",
-        "kind",
-        "description",
-        "dataType",
-        "nullable",
-        "columns",
-        "constraints"
-      ],
+      "description": "A user-defined type. A table type reuses the table's own column and constraint definitions, deliberately: a table type is a table shape, and a second set of definitions would drift from the first. `dataType` and `nullable` are present only when `kind` is 'alias'; `columns` and `constraints` only when it is 'table'. Presence carries applicability here because a `$ref` cannot be made nullable without sibling keys, which would fork a duplicate type in one language and be ignored in the other.",
+      "required": ["id", "path", "kind", "description"],
       "properties": {
         "id": { "type": "string" },
         "path": { "$ref": "#/$defs/identifierPath" },
@@ -523,17 +520,17 @@
         "description": { "type": ["string", "null"] },
         "dataType": { "$ref": "#/$defs/dataType" },
         "nullable": {
-          "type": ["boolean", "null"],
-          "description": "Non-null only when `kind` is 'alias'."
+          "type": "boolean",
+          "description": "Present only when `kind` is 'alias'."
         },
         "columns": {
-          "type": ["array", "null"],
-          "description": "Non-null only when `kind` is 'table'.",
+          "type": "array",
+          "description": "Present only when `kind` is 'table'.",
           "items": { "$ref": "#/$defs/column" }
         },
         "constraints": {
-          "type": ["array", "null"],
-          "description": "Non-null only when `kind` is 'table'.",
+          "type": "array",
+          "description": "Present only when `kind` is 'table'.",
           "items": { "$ref": "#/$defs/constraint" }
         },
         "extensions": { "$ref": "#/$defs/extensions" }

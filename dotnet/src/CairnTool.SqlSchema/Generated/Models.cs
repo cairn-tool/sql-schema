@@ -264,6 +264,9 @@ public sealed record SqlTable {
 /// <summary>
 /// A column. Carries no derived flags: whether it is a key, a period boundary, or has a default
 /// are all facts of the table's constraints and temporal period, recorded once there.
+/// `dataType` is omitted when the source does not report one, which is the case for a computed
+/// column in a compiled model: the model records the expression and its dependencies but never
+/// resolves the resulting type.
 /// </summary>
 public sealed record SqlColumn {
     [JsonPropertyName("name")]
@@ -273,7 +276,8 @@ public sealed record SqlColumn {
     public required string? Description { get; init; }
 
     [JsonPropertyName("dataType")]
-    public required SqlDataType DataType { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public SqlDataType? DataType { get; init; }
 
     /// <summary>
     /// Whether the column accepts NULL. Nullability lives here rather than on the data type,
@@ -510,12 +514,21 @@ public sealed record SqlIndex {
     public IReadOnlyDictionary<string, JsonElement>? Extensions { get; init; }
 }
 
+/// <summary>
+/// A key column of an index, in index order.
+/// </summary>
 public sealed record SqlIndexColumn {
     [JsonPropertyName("name")]
     public required string Name { get; init; }
 
+    /// <summary>
+    /// Sort direction, when the source reports one. Omitted when it does not: a compiled model does
+    /// not carry index sort direction, so a producer reading one leaves this absent rather than
+    /// asserting ascending.
+    /// </summary>
     [JsonPropertyName("descending")]
-    public required bool Descending { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? Descending { get; init; }
 }
 
 /// <summary>
@@ -592,7 +605,7 @@ public sealed record SqlResultColumn {
 
 /// <summary>
 /// A procedure, function or aggregate, as a signature. The body is never recorded. `returns` is
-/// non-null only for a scalar function.
+/// present only for a scalar function.
 /// </summary>
 public sealed record SqlRoutine {
     [JsonPropertyName("id")]
@@ -614,7 +627,8 @@ public sealed record SqlRoutine {
     public required IReadOnlyList<SqlParameter> Parameters { get; init; }
 
     [JsonPropertyName("returns")]
-    public required SqlRoutineReturn Returns { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public SqlRoutineReturn? Returns { get; init; }
 
     /// <summary>
     /// Result columns of a table-valued function. Always empty for a procedure: a procedure's
@@ -727,8 +741,10 @@ public sealed record SqlSequence {
 /// <summary>
 /// A user-defined type. A table type reuses the table's own column and constraint definitions,
 /// deliberately: a table type is a table shape, and a second set of definitions would drift
-/// from the first. `dataType` and `nullable` are non-null only when `kind` is 'alias';
-/// `columns` and `constraints` only when it is 'table'.
+/// from the first. `dataType` and `nullable` are present only when `kind` is 'alias'; `columns`
+/// and `constraints` only when it is 'table'. Presence carries applicability here because a
+/// `$ref` cannot be made nullable without sibling keys, which would fork a duplicate type in
+/// one language and be ignored in the other.
 /// </summary>
 public sealed record SqlUserDefinedType {
     [JsonPropertyName("id")]
@@ -747,25 +763,29 @@ public sealed record SqlUserDefinedType {
     public required string? Description { get; init; }
 
     [JsonPropertyName("dataType")]
-    public required SqlDataType DataType { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public SqlDataType? DataType { get; init; }
 
     /// <summary>
-    /// Non-null only when `kind` is 'alias'.
+    /// Present only when `kind` is 'alias'.
     /// </summary>
     [JsonPropertyName("nullable")]
-    public required bool? Nullable { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? Nullable { get; init; }
 
     /// <summary>
-    /// Non-null only when `kind` is 'table'.
+    /// Present only when `kind` is 'table'.
     /// </summary>
     [JsonPropertyName("columns")]
-    public required IReadOnlyList<SqlColumn>? Columns { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyList<SqlColumn>? Columns { get; init; }
 
     /// <summary>
-    /// Non-null only when `kind` is 'table'.
+    /// Present only when `kind` is 'table'.
     /// </summary>
     [JsonPropertyName("constraints")]
-    public required IReadOnlyList<SqlConstraint>? Constraints { get; init; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public IReadOnlyList<SqlConstraint>? Constraints { get; init; }
 
     [JsonPropertyName("extensions")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]

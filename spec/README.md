@@ -287,6 +287,16 @@ normalized text and this format treats it as **opaque**. A producer reading a co
 producer reading a catalog may legitimately disagree about parenthesization and casing. Two
 documents' expressions are comparable only when their `source.kind` matches.
 
+### Index sort direction
+
+`SqlIndexColumn.descending` is **optional**, and its absence means "not reported" rather than
+"ascending".
+
+A compiled model does not carry index sort direction — it is not in the public model surface at
+all — so a producer reading one omits the member. A producer reading a live catalog can report it.
+This is the same rule as an anonymous constraint's name: a producer states what the source tells
+it and leaves the rest absent, because a fabricated `false` is indistinguishable from a real one.
+
 ## Temporal tables
 
 `temporal` carries the period. A history table is identified **only** by another table naming it —

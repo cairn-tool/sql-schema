@@ -1,0 +1,331 @@
+{
+  "schemaVersion": "1",
+  "tool": {
+    "name": "sqlschema"
+  },
+  "engine": {
+    "name": "sqlserver",
+    "version": "12",
+    "targetPlatform": "SqlAzure",
+    "collation": null,
+    "caseSensitive": false
+  },
+  "source": {
+    "kind": "dacpac",
+    "name": "programmability",
+    "version": "1.0.0.0"
+  },
+  "schemas": [
+    {
+      "id": "app",
+      "path": [
+        "app"
+      ],
+      "description": null
+    }
+  ],
+  "tables": [
+    {
+      "id": "app.Store",
+      "path": [
+        "app",
+        "Store"
+      ],
+      "description": null,
+      "columns": [
+        {
+          "name": "StoreId",
+          "description": null,
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": false
+        },
+        {
+          "name": "StoreNumber",
+          "description": null,
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": false
+        },
+        {
+          "name": "Name",
+          "description": null,
+          "dataType": {
+            "name": "nvarchar",
+            "userDefined": false,
+            "length": 80,
+            "rendered": "nvarchar(80)"
+          },
+          "nullable": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "PK_app_Store",
+          "kind": "primaryKey",
+          "columns": [
+            "StoreId"
+          ],
+          "extensions": {
+            "sqlserver": {
+              "clustered": true
+            }
+          }
+        }
+      ],
+      "indexes": []
+    }
+  ],
+  "views": [
+    {
+      "id": "app.vActiveStore",
+      "path": [
+        "app",
+        "vActiveStore"
+      ],
+      "description": null,
+      "columns": [
+        {
+          "name": "StoreId",
+          "description": null,
+          "dataType": {
+            "name": "sql_variant",
+            "userDefined": false,
+            "rendered": "sql_variant"
+          },
+          "nullable": true
+        },
+        {
+          "name": "StoreNumber",
+          "description": null,
+          "dataType": {
+            "name": "sql_variant",
+            "userDefined": false,
+            "rendered": "sql_variant"
+          },
+          "nullable": true
+        },
+        {
+          "name": "Name",
+          "description": null,
+          "dataType": {
+            "name": "sql_variant",
+            "userDefined": false,
+            "rendered": "sql_variant"
+          },
+          "nullable": true
+        }
+      ]
+    }
+  ],
+  "routines": [
+    {
+      "id": "app.fn_StoreName",
+      "path": [
+        "app",
+        "fn_StoreName"
+      ],
+      "kind": "scalarFunction",
+      "description": null,
+      "parameters": [
+        {
+          "name": "@StoreId",
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": true,
+          "mode": "in"
+        }
+      ],
+      "returns": {
+        "dataType": {
+          "name": "nvarchar",
+          "userDefined": false,
+          "rendered": "nvarchar"
+        },
+        "nullable": true
+      },
+      "resultColumns": []
+    },
+    {
+      "id": "app.fn_StoresIn",
+      "path": [
+        "app",
+        "fn_StoresIn"
+      ],
+      "kind": "tableValuedFunction",
+      "description": null,
+      "parameters": [
+        {
+          "name": "@StoreNumber",
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": true,
+          "mode": "in"
+        }
+      ],
+      "resultColumns": [
+        {
+          "name": "StoreId",
+          "description": null,
+          "dataType": {
+            "name": "sql_variant",
+            "userDefined": false,
+            "rendered": "sql_variant"
+          },
+          "nullable": true
+        },
+        {
+          "name": "Name",
+          "description": null,
+          "dataType": {
+            "name": "sql_variant",
+            "userDefined": false,
+            "rendered": "sql_variant"
+          },
+          "nullable": true
+        }
+      ]
+    },
+    {
+      "id": "app.usp_UpsertStore",
+      "path": [
+        "app",
+        "usp_UpsertStore"
+      ],
+      "kind": "procedure",
+      "description": null,
+      "parameters": [
+        {
+          "name": "@StoreId",
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": true,
+          "mode": "in"
+        },
+        {
+          "name": "@Name",
+          "dataType": {
+            "name": "nvarchar",
+            "userDefined": false,
+            "length": 80,
+            "rendered": "nvarchar(80)"
+          },
+          "nullable": true,
+          "mode": "in",
+          "defaultExpression": "N'unnamed'"
+        },
+        {
+          "name": "@Stores",
+          "dataType": {
+            "name": "app.StoreIdList",
+            "userDefined": true,
+            "rendered": "app.StoreIdList"
+          },
+          "nullable": true,
+          "mode": "in",
+          "readOnly": true
+        },
+        {
+          "name": "@RowsAffected",
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": true,
+          "mode": "inOut"
+        }
+      ],
+      "resultColumns": []
+    }
+  ],
+  "sequences": [
+    {
+      "id": "app.StoreNumbers",
+      "path": [
+        "app",
+        "StoreNumbers"
+      ],
+      "description": null,
+      "dataType": {
+        "name": "bigint",
+        "userDefined": false,
+        "rendered": "bigint"
+      },
+      "startValue": "1000",
+      "increment": "10",
+      "minValue": "1000",
+      "maxValue": "9999999999",
+      "cycle": false,
+      "cache": true,
+      "cacheSize": 50
+    }
+  ],
+  "userDefinedTypes": [
+    {
+      "id": "app.StoreIdList",
+      "path": [
+        "app",
+        "StoreIdList"
+      ],
+      "kind": "table",
+      "description": null,
+      "columns": [
+        {
+          "name": "StoreId",
+          "description": null,
+          "nullable": true
+        }
+      ],
+      "constraints": []
+    }
+  ],
+  "synonyms": [
+    {
+      "id": "app.Shop",
+      "path": [
+        "app",
+        "Shop"
+      ],
+      "description": null,
+      "target": "[app].[Store]",
+      "targetPath": [
+        "app",
+        "Store"
+      ]
+    }
+  ],
+  "triggers": [
+    {
+      "id": "app.tr_Store_Audit",
+      "path": [
+        "app",
+        "tr_Store_Audit"
+      ],
+      "kind": "dml",
+      "description": null,
+      "table": "app.Store",
+      "timing": "after",
+      "events": [
+        "insert",
+        "update"
+      ],
+      "disabled": false
+    }
+  ]
+}

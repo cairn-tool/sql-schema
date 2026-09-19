@@ -1,0 +1,91 @@
+{
+  "schemaVersion": "1",
+  "tool": {
+    "name": "sqlschema"
+  },
+  "engine": {
+    "name": "sqlserver",
+    "version": "12",
+    "targetPlatform": "SqlAzure",
+    "collation": null,
+    "caseSensitive": false
+  },
+  "source": {
+    "kind": "dacpac",
+    "name": "annotated",
+    "version": "1.0.0.0"
+  },
+  "schemas": [
+    {
+      "id": "cfg",
+      "path": [
+        "cfg"
+      ],
+      "description": "Configuration owned by the platform rather than by a store."
+    }
+  ],
+  "tables": [
+    {
+      "id": "cfg.StoreStatus",
+      "path": [
+        "cfg",
+        "StoreStatus"
+      ],
+      "description": "Per-store status, one row per store.",
+      "columns": [
+        {
+          "name": "StoreStatusId",
+          "description": null,
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": false
+        },
+        {
+          "name": "StoreStatusFlags",
+          "description": "Bit flags: 1 ingesting, 2 forecasting, 4 scheduling.",
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": false
+        },
+        {
+          "name": "StatusCode",
+          "description": "A=Active, I=Inactive.",
+          "dataType": {
+            "name": "char",
+            "userDefined": false,
+            "length": 1,
+            "rendered": "char(1)"
+          },
+          "nullable": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "PK_cfg_StoreStatus",
+          "kind": "primaryKey",
+          "columns": [
+            "StoreStatusId"
+          ],
+          "extensions": {
+            "sqlserver": {
+              "clustered": true
+            }
+          }
+        }
+      ],
+      "indexes": []
+    }
+  ],
+  "views": [],
+  "routines": [],
+  "sequences": [],
+  "userDefinedTypes": [],
+  "synonyms": [],
+  "triggers": []
+}

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "1",
+  "tool": {
+    "name": "sqlschema"
+  },
+  "engine": {
+    "name": "sqlserver",
+    "version": "12",
+    "targetPlatform": "SqlAzure",
+    "collation": null,
+    "caseSensitive": false
+  },
+  "source": {
+    "kind": "dacpac",
+    "name": "composite",
+    "version": "1.0.0.0"
+  },
+  "schemas": [
+    {
+      "id": "local",
+      "path": [
+        "local"
+      ],
+      "description": null
+    }
+  ],
+  "tables": [
+    {
+      "id": "local.Branch",
+      "path": [
+        "local",
+        "Branch"
+      ],
+      "description": null,
+      "columns": [
+        {
+          "name": "BranchId",
+          "description": null,
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": false
+        },
+        {
+          "name": "RegionId",
+          "description": null,
+          "dataType": {
+            "name": "int",
+            "userDefined": false,
+            "rendered": "int"
+          },
+          "nullable": false
+        }
+      ],
+      "constraints": [
+        {
+          "name": "FK_local_Branch_Region",
+          "kind": "foreignKey",
+          "columns": [
+            "RegionId"
+          ],
+          "onDelete": "noAction",
+          "onUpdate": "noAction"
+        },
+        {
+          "name": "PK_local_Branch",
+          "kind": "primaryKey",
+          "columns": [
+            "BranchId"
+          ],
+          "extensions": {
+            "sqlserver": {
+              "clustered": true
+            }
+          }
+        }
+      ],
+      "indexes": []
+    }
+  ],
+  "views": [],
+  "routines": [],
+  "sequences": [],
+  "userDefinedTypes": [],
+  "synonyms": [],
+  "triggers": []
+}

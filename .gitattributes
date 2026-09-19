@@ -1,0 +1,15 @@
+# LF everywhere, including on Windows checkouts.
+#
+# .editorconfig sets end_of_line = lf and dotnet_diagnostic.IDE0055.severity = error, and
+# EnforceCodeStyleInBuild turns that into a build failure. Without this file a Windows checkout
+# converts every source file to CRLF and the build fails on formatting for every line of every
+# file -- which is exactly what happened on windows-latest.
+* text=auto eol=lf
+
+# Binary, and the one committed dacpac in the repository. Never line-ending converted, never
+# diffed as text.
+*.dacpac binary
+*.nupkg binary
+*.snupkg binary
+*.png binary
+*.ico binary

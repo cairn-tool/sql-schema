@@ -23,10 +23,13 @@
  */
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { canonicalizeJson, validate } from "../packages/sql-schema/dist/index.js";
 
-const ROOT = new URL("..", import.meta.url).pathname;
+// fileURLToPath, not .pathname: on Windows a file URL's pathname is "/D:/a/..." with a
+// leading slash, and joining that produces "D:\D:\a\..." — a path that cannot exist.
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const GOLDENS = join(ROOT, "spec/conformance");
 const DOTNET = join(ROOT, "artifacts/dotnet");
 const NODE = join(ROOT, "artifacts/node");

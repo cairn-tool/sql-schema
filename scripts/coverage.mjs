@@ -16,8 +16,11 @@
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const ROOT = new URL("..", import.meta.url).pathname;
+// fileURLToPath, not .pathname: on Windows a file URL's pathname is "/D:/a/..." with a
+// leading slash, and joining that produces "D:\D:\a\..." — a path that cannot exist.
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const schema = JSON.parse(readFileSync(join(ROOT, "spec/v1/sql-schema.json"), "utf8"));
 const defs = schema.$defs ?? {};
 

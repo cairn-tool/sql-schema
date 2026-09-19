@@ -12,11 +12,14 @@
  */
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 import prettier from "prettier";
 import { compile } from "json-schema-to-typescript";
 import { emitCSharp } from "./emit-csharp.mjs";
 
-const ROOT = new URL("..", import.meta.url).pathname;
+// fileURLToPath, not .pathname: on Windows a file URL's pathname is "/D:/a/..." with a
+// leading slash, and joining that produces "D:\D:\a\..." — a path that cannot exist.
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const SPEC = join(ROOT, "spec/v1/sql-schema.json");
 
 const BANNER = `/*

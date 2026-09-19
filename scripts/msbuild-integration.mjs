@@ -11,8 +11,11 @@
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const ROOT = new URL("..", import.meta.url).pathname;
+// fileURLToPath, not .pathname: on Windows a file URL's pathname is "/D:/a/..." with a
+// leading slash, and joining that produces "D:\D:\a\..." — a path that cannot exist.
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const FIXTURE = join(ROOT, "spec/fixtures/integration");
 const PROJECT = join(FIXTURE, "integration.sqlproj");
 const FEED = join(ROOT, "artifacts/localfeed");

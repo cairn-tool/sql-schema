@@ -105,8 +105,9 @@ comparable only between documents of the same kind.
 What is deliberately **not** in `source`: the package description, the DAC type, the project GUID,
 the SDK version, and any timestamp. The target-platform string is normalized into
 `engine.targetPlatform` rather than kept raw, because
-`Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider` is a DacFx implementation
-detail, not a fact about the database.
+`Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider` is a tooling implementation
+detail, not a fact about the database. A model targeting it reports the platform as `SqlAzure` and
+the engine version as `12`; those are the two values recorded.
 
 `engine.collation` is a collation _name_. A dacpac carries a locale identifier and comparison flags
 instead, so for a dacpac-sourced document `collation` is `null`, `caseSensitive` carries the fact a

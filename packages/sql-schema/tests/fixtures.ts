@@ -20,7 +20,7 @@ export const document = (overrides: Partial<SqlSchemaDescription> = {}): SqlSche
   engine: {
     name: "sqlserver",
     version: null,
-    targetPlatform: "SqlAzureV12",
+    targetPlatform: "SqlAzure",
     collation: null,
     caseSensitive: false,
   },

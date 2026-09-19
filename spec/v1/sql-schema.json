@@ -45,11 +45,11 @@
         },
         "version": {
           "type": ["string", "null"],
-          "description": "Engine product version, or null when the source does not carry one. A dacpac does not; a live database does."
+          "description": "Engine major version as a decimal string, e.g. '12' for Azure SQL Database, or null when the source does not report one."
         },
         "targetPlatform": {
           "type": ["string", "null"],
-          "description": "The normalized target platform, e.g. 'SqlAzureV12'. Normalized deliberately: the raw DacFx schema-provider string is an implementation detail, not a fact about the database."
+          "description": "The platform the model targets, e.g. 'SqlAzure' or 'Sql160'. Normalized deliberately: the raw schema-provider string a project declares is a tooling implementation detail, not a fact about the database."
         },
         "collation": {
           "type": ["string", "null"],

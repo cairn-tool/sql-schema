@@ -128,15 +128,16 @@ public sealed record SqlEngineInfo {
     public required string Name { get; init; }
 
     /// <summary>
-    /// Engine product version, or null when the source does not carry one. A dacpac does not; a
-    /// live database does.
+    /// Engine major version as a decimal string, e.g. '12' for Azure SQL Database, or null when the
+    /// source does not report one.
     /// </summary>
     [JsonPropertyName("version")]
     public required string? Version { get; init; }
 
     /// <summary>
-    /// The normalized target platform, e.g. 'SqlAzureV12'. Normalized deliberately: the raw DacFx
-    /// schema-provider string is an implementation detail, not a fact about the database.
+    /// The platform the model targets, e.g. 'SqlAzure' or 'Sql160'. Normalized deliberately: the
+    /// raw schema-provider string a project declares is a tooling implementation detail, not a fact
+    /// about the database.
     /// </summary>
     [JsonPropertyName("targetPlatform")]
     public required string? TargetPlatform { get; init; }

@@ -26,16 +26,16 @@ object is either absent or attributed.
 
 ## Envelope
 
-| Core member             | Source                                                                                                            |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `engine.name`           | Constant `"sqlserver"`.                                                                                           |
-| `engine.version`        | `null` for a dacpac — a package records the platform it targets, not a product version.                           |
-| `engine.targetPlatform` | `TSqlModel.Version`, normalized to its platform name (`SqlAzureV12`). The raw schema-provider string is not kept. |
-| `engine.collation`      | `null` for a dacpac. See below.                                                                                   |
-| `engine.caseSensitive`  | From the model's collation comparison flags.                                                                      |
-| `source.kind`           | `"dacpac"`.                                                                                                       |
-| `source.name`           | `DacPackage.Name`.                                                                                                |
-| `source.version`        | `DacPackage.Version`.                                                                                             |
+| Core member             | Source                                                                                                                                                                                                                                          |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `engine.name`           | Constant `"sqlserver"`.                                                                                                                                                                                                                         |
+| `engine.version`        | `TSqlModel.EngineVersion` as a decimal string — `12` for a model targeting Azure SQL Database, `15` for SQL Server 2019.                                                                                                                        |
+| `engine.targetPlatform` | `TSqlModel.Version` — the `SqlServerVersion` enum name, `SqlAzure` or `Sql160`. Note this is **not** the DSP string a `.sqlproj` declares: a project saying `SqlAzureV12DatabaseSchemaProvider` produces a model whose `Version` is `SqlAzure`. |
+| `engine.collation`      | `null` for a dacpac. See below.                                                                                                                                                                                                                 |
+| `engine.caseSensitive`  | From the model's collation comparison flags.                                                                                                                                                                                                    |
+| `source.kind`           | `"dacpac"`.                                                                                                                                                                                                                                     |
+| `source.name`           | `DacPackage.Name`.                                                                                                                                                                                                                              |
+| `source.version`        | `DacPackage.Version`.                                                                                                                                                                                                                           |
 
 A dacpac records its model collation as a locale identifier plus case- and accent-sensitivity
 flags, not as a collation name. `engine.collation` is therefore `null`, `engine.caseSensitive`

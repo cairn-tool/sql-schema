@@ -17,7 +17,7 @@ internal static class Documents {
         Engine = new SqlEngineInfo {
             Name = "sqlserver",
             Version = null,
-            TargetPlatform = "SqlAzureV12",
+            TargetPlatform = "SqlAzure",
             Collation = null,
             CaseSensitive = false,
         },

@@ -208,6 +208,39 @@ jobs:
       - name: Check every declared member is exercised by a golden
         run: npm run coverage
 
+  msbuild-integration:
+    name: MSBuild integration (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # Windows because path quoting in the Exec command is a real failure mode there, and ARM
+        # because that is where the SDK's own tasks run in-process rather than through
+        # TaskHostFactory -- the case the Exec design exists to be immune to.
+        os: [ubuntu-latest, windows-latest, ubuntu-24.04-arm]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - run: npm ci
+
+      - name: Build a SQL project against the packed MSBuild package
+        run: npm run msbuild:check
+
   commitlint:
     name: Commit messages
     runs-on: ubuntu-latest

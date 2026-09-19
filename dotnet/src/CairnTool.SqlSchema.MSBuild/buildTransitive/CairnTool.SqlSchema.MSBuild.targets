@@ -1,0 +1,80 @@
+<Project>
+  <PropertyGroup>
+    <_CairnSqlSchemaTargetsImported>true</_CairnSqlSchemaTargetsImported>
+
+    <!-- $(SqlTargetPath) is the .dacpac. $(TargetPath) is the .dll a SQL project also emits, which
+         is a different file in the same directory. Verified, not assumed. -->
+    <SqlSchemaOutputPath Condition="'$(SqlSchemaOutputPath)' == ''">$(TargetDir)sql-schema.json</SqlSchemaOutputPath>
+
+    <!-- dotnet build exports DOTNET_HOST_PATH, and MSBuild surfaces environment variables as
+         properties. The fallback covers a plain msbuild invocation. -->
+    <_CairnSqlSchemaHost Condition="'$(DOTNET_HOST_PATH)' != ''">$(DOTNET_HOST_PATH)</_CairnSqlSchemaHost>
+    <_CairnSqlSchemaHost Condition="'$(_CairnSqlSchemaHost)' == ''">dotnet</_CairnSqlSchemaHost>
+
+    <!-- ⚠️ No Exists() check up here. This file is evaluated before the build runs, when the
+         .dacpac does not exist yet, so a precomputed property would always be false and neither
+         target would ever fire. The conditions live on the targets, where they are evaluated at
+         execution time. -->
+  </PropertyGroup>
+
+  <Target Name="_CairnSqlSchemaArguments">
+    <PropertyGroup>
+      <_CairnSqlSchemaArgs></_CairnSqlSchemaArgs>
+      <_CairnSqlSchemaArgs Condition="'$(SqlSchemaAnnotationsPath)' != ''">$(_CairnSqlSchemaArgs) --annotations "$(SqlSchemaAnnotationsPath)"</_CairnSqlSchemaArgs>
+      <_CairnSqlSchemaArgs Condition="'$(SqlSchemaIncludeReferenced)' == 'true'">$(_CairnSqlSchemaArgs) --include-referenced</_CairnSqlSchemaArgs>
+      <_CairnSqlSchemaArgs Condition="'$(SqlSchemaDatabaseName)' != ''">$(_CairnSqlSchemaArgs) --database-name "$(SqlSchemaDatabaseName)"</_CairnSqlSchemaArgs>
+    </PropertyGroup>
+    <ItemGroup>
+      <_CairnSqlSchemaInclude Include="$(SqlSchemaIncludeSchemas)" />
+      <_CairnSqlSchemaExclude Include="$(SqlSchemaExcludeSchemas)" />
+    </ItemGroup>
+    <PropertyGroup>
+      <_CairnSqlSchemaArgs>$(_CairnSqlSchemaArgs)@(_CairnSqlSchemaInclude->' --schema &quot;%(Identity)&quot;','')</_CairnSqlSchemaArgs>
+      <_CairnSqlSchemaArgs>$(_CairnSqlSchemaArgs)@(_CairnSqlSchemaExclude->' --exclude-schema &quot;%(Identity)&quot;','')</_CairnSqlSchemaArgs>
+      <_CairnSqlSchemaCommand>&quot;$(_CairnSqlSchemaHost)&quot; exec &quot;$(SqlSchemaToolPath)&quot; extract &quot;$(SqlTargetPath)&quot; --output &quot;$(SqlSchemaOutputPath)&quot;$(_CairnSqlSchemaArgs)</_CairnSqlSchemaCommand>
+    </PropertyGroup>
+  </Target>
+
+  <!--
+    ⚠️ Incrementality keys off @(Build), the project's .sql sources, and NOT off $(SqlTargetPath).
+
+    SqlBuild rewrites the .dacpac on every build even when nothing changed — its timestamp advances
+    every time. Keying off it would make this target run on every build forever, which on a large
+    database costs real seconds on every developer's every build and is how a package earns an
+    uninstall. The document is a function of the schema, and the schema is the .sql files.
+
+    The tool's own path and this file are inputs too, so upgrading the package re-extracts: a DacFx
+    bump can legitimately change the document.
+  -->
+  <Target Name="CairnSqlSchemaExtract"
+          AfterTargets="Build"
+          DependsOnTargets="_CairnSqlSchemaArguments"
+          Condition="'$(SqlSchemaExtractEnabled)' == 'true' and '$(SqlSchemaFailOnDrift)' != 'true' and Exists('$(SqlSchemaToolPath)') and Exists('$(SqlTargetPath)')"
+          Inputs="@(Build);$(SqlSchemaToolPath);$(MSBuildThisFileFullPath)"
+          Outputs="$(SqlSchemaOutputPath)">
+
+    <Exec Command="$(_CairnSqlSchemaCommand)" StandardOutputImportance="low" />
+    <Message Importance="normal" Text="sql-schema -> $(SqlSchemaOutputPath)" />
+
+    <!-- The document is build output, so Clean should remove it. Recording it here is the
+         difference between an artifact and a stray file. -->
+    <ItemGroup>
+      <FileWrites Include="$(SqlSchemaOutputPath)" />
+    </ItemGroup>
+  </Target>
+
+  <!--
+    ⚠️ Deliberately NOT incremental.
+
+    A verification that can be skipped is not a verification. With Inputs/Outputs, a committed
+    document whose timestamp happens to be newer than the sources — which is simply whatever order
+    a CI checkout wrote the files in — would skip the check and report success on a stale document.
+    That is the exact failure this property exists to prevent, so the drift check always runs.
+  -->
+  <Target Name="CairnSqlSchemaCheck"
+          AfterTargets="Build"
+          DependsOnTargets="_CairnSqlSchemaArguments"
+          Condition="'$(SqlSchemaExtractEnabled)' == 'true' and '$(SqlSchemaFailOnDrift)' == 'true' and Exists('$(SqlSchemaToolPath)') and Exists('$(SqlTargetPath)')">
+    <Exec Command="$(_CairnSqlSchemaCommand) --check" StandardOutputImportance="low" />
+  </Target>
+</Project>

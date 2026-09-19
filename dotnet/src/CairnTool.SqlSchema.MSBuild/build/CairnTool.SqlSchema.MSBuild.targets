@@ -1,0 +1,6 @@
+<Project>
+  <!-- NuGet imports buildTransitive/ for this package; this exists only for a client that looks
+       at build/ instead. The sentinel in the imported file stops it being applied twice. -->
+  <Import Project="$(MSBuildThisFileDirectory)../buildTransitive/CairnTool.SqlSchema.MSBuild.targets"
+          Condition="Exists('$(MSBuildThisFileDirectory)../buildTransitive/CairnTool.SqlSchema.MSBuild.targets')" />
+</Project>

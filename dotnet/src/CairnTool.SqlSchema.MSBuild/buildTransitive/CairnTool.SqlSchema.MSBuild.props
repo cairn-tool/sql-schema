@@ -1,0 +1,34 @@
+<Project>
+  <PropertyGroup Condition="'$(_CairnSqlSchemaPropsImported)' != 'true'">
+    <_CairnSqlSchemaPropsImported>true</_CairnSqlSchemaPropsImported>
+
+    <SqlSchemaExtractEnabled Condition="'$(SqlSchemaExtractEnabled)' == ''">true</SqlSchemaExtractEnabled>
+    <SqlSchemaIncludeReferenced Condition="'$(SqlSchemaIncludeReferenced)' == ''">false</SqlSchemaIncludeReferenced>
+    <SqlSchemaFailOnDrift Condition="'$(SqlSchemaFailOnDrift)' == ''">false</SqlSchemaFailOnDrift>
+    <SqlSchemaDatabaseName Condition="'$(SqlSchemaDatabaseName)' == ''">$(MSBuildProjectName)</SqlSchemaDatabaseName>
+    <SqlSchemaToolPath Condition="'$(SqlSchemaToolPath)' == ''">$(MSBuildThisFileDirectory)../tasks/net8.0/CairnTool.SqlSchema.Tool.dll</SqlSchemaToolPath>
+  </PropertyGroup>
+
+  <!--
+    ⚠️ This file evaluates AFTER the project body, not before.
+
+    The Microsoft.Build.Sql SDK is referenced as an <Sdk> element, which imports Sdk.props at the
+    top of the project and Sdk.targets at the bottom. NuGet's generated props come in through
+    Microsoft.Common.props, which Sdk.targets imports — so everything here is read once the
+    project's own PropertyGroups have already been evaluated. The conditions above still behave
+    correctly, because a property the consumer set is already non-empty; but anyone reasoning from
+    an ordinary SDK-style project will have the order backwards.
+  -->
+
+  <!--
+    The .targets half arrives through a longer chain: SqlTasks.targets defaults TargetLanguage to
+    CS, which imports Microsoft.CSharp.targets, which imports Microsoft.Common.targets, which
+    imports NuGet's generated targets. A consumer who blanks TargetLanguage loses that chain and
+    with it our target, silently. This makes that loud instead.
+  -->
+  <Target Name="CairnSqlSchemaVerifyImport" AfterTargets="Build"
+          Condition="'$(SqlSchemaExtractEnabled)' == 'true' and '$(_CairnSqlSchemaTargetsImported)' != 'true'">
+    <Warning Code="CAIRNSQL001"
+             Text="CairnTool.SqlSchema.MSBuild: the .targets half was not imported, so no sql-schema document was written. This usually means TargetLanguage was cleared on this project, which drops the import chain NuGet's generated targets arrive through." />
+  </Target>
+</Project>

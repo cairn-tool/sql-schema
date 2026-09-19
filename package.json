@@ -39,7 +39,8 @@
     "goldens": "node scripts/goldens.mjs",
     "conformance": "node scripts/conformance.mjs",
     "coverage": "node scripts/coverage.mjs",
-    "xml:check": "node scripts/check-xml-comments.mjs"
+    "xml:check": "node scripts/check-xml-comments.mjs",
+    "msbuild:check": "node scripts/msbuild-integration.mjs"
   },
   "devDependencies": {
     "@cairn-tool/cli-schema": "^1.1.0",

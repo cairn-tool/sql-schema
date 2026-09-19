@@ -20,11 +20,17 @@ const OUT = join(ROOT, "artifacts/fixtures");
 
 /** A case is a directory directly under spec/fixtures holding a same-named .sqlproj. */
 function cases() {
-  return readdirSync(FIXTURES, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory())
-    .map((entry) => entry.name)
-    .filter((name) => existsSync(join(FIXTURES, name, `${name}.sqlproj`)))
-    .sort();
+  return (
+    readdirSync(FIXTURES, { withFileTypes: true })
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .filter((name) => existsSync(join(FIXTURES, name, `${name}.sqlproj`)))
+      // `integration` is built by scripts/msbuild-integration.mjs instead: it references the
+      // MSBuild package from a local feed that has to be packed first, so it cannot build from a
+      // clean tree.
+      .filter((name) => name !== "integration")
+      .sort()
+  );
 }
 
 const check = process.argv.includes("--check");

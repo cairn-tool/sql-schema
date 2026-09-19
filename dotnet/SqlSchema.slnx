@@ -3,6 +3,7 @@
     <Project Path="src/CairnTool.SqlSchema/CairnTool.SqlSchema.csproj" />
     <Project Path="src/CairnTool.SqlSchema.DacFx/CairnTool.SqlSchema.DacFx.csproj" />
     <Project Path="src/CairnTool.SqlSchema.Tool/CairnTool.SqlSchema.Tool.csproj" />
+    <Project Path="src/CairnTool.SqlSchema.MSBuild/CairnTool.SqlSchema.MSBuild.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/CairnTool.SqlSchema.Tests/CairnTool.SqlSchema.Tests.csproj" />

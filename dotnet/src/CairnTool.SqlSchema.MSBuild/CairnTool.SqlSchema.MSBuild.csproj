@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+
+    <!-- This package is XML plus a payload. It has no library of its own, and it must not put a
+         single dependency into a .sqlproj's closure: the Microsoft.Build.Sql SDK walks that
+         closure, and DacFx arriving there is exactly what this design exists to avoid. -->
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <!-- NU5128: no lib/ folder, which is the point. NU5100: assemblies outside lib/, which is
+         also the point. The payload under tasks/ must NOT be referenced by a consuming project;
+         it is a program this package runs, not a library it offers. -->
+    <NoWarn>$(NoWarn);NU5128;NU5100</NoWarn>
+
+    <PackageId>CairnTool.SqlSchema.MSBuild</PackageId>
+    <Authors>Bryan Stockus</Authors>
+    <Description>Writes a sql-schema document beside the .dacpac when a SQL project builds.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/cairn-tool/sql-schema</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/cairn-tool/sql-schema</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>sql;schema;dacpac;sqlserver;msbuild</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+    <ToolPayload>$(MSBuildProjectDirectory)/obj/payload</ToolPayload>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="build/**" Pack="true" PackagePath="build/" />
+    <None Include="buildTransitive/**" Pack="true" PackagePath="buildTransitive/" />
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <!-- The payload is the sqlschema tool itself, published framework-dependent. Shipping the tool
+       rather than a second extract-only executable is what keeps the MSBuild path and the CLI path
+       from ever diverging in behaviour: there is one binary and one set of tests behind it.
+
+       It goes under tasks/, deliberately not tools/. The SDK's ResolveDacpacPackageReferences
+       probes $(Pkg<Id>)/tools/<Id>.dacpac for every PackageReference on a SQL project; nothing of
+       ours would match, but staying out of that directory means the question never arises. -->
+  <PropertyGroup>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);AddToolPayload</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+
+  <Target Name="PublishToolPayload">
+    <Exec Command="dotnet publish &quot;$(MSBuildThisFileDirectory)../CairnTool.SqlSchema.Tool/CairnTool.SqlSchema.Tool.csproj&quot; -c $(Configuration) -f net8.0 -o &quot;$(ToolPayload)&quot; --nologo -v quiet"
+          StandardOutputImportance="low" />
+  </Target>
+
+  <!-- TfmSpecificPackageFile, not a None item added in a target. Pack computes its file list before
+       a BeforeTargets="GenerateNuspec" target gets to add anything, so items created that way are
+       silently dropped and the package ships without its payload. This is the documented hook for
+       content that does not exist until build time. -->
+  <Target Name="AddToolPayload" DependsOnTargets="PublishToolPayload">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(ToolPayload)/**/*" PackagePath="tasks/net8.0/" />
+    </ItemGroup>
+  </Target>
+</Project>

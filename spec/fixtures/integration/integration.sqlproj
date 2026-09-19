@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build">
+  <Sdk Name="Microsoft.Build.Sql" Version="0.1.12-preview" />
+  <PropertyGroup>
+    <Name>integration</Name>
+    <!-- ⚠️ Not named "msbuild". A SQL project emits a .dll alongside its .dacpac, and one named
+         msbuild.dll is resolved as the MSBuild assembly and rejected with SQL72025: "CLR types are
+         not supported on .NET Core". The project builds fine under any other name. -->
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <ModelCollation>1033, CI</ModelCollation>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CairnTool.SqlSchema.MSBuild" Version="0.0.0-local" />
+  </ItemGroup>
+</Project>

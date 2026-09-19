@@ -49,15 +49,20 @@ describe.skipIf(cases.length === 0)("cross-language conformance", () => {
   });
 });
 
-describe("the gate itself", () => {
-  it("is not silently empty", () => {
-    // A skipped conformance suite looks identical to a passing one in CI output. This does not.
-    if (cases.length === 0) {
-      expect(
-        existsSync(from),
-        "artifacts/dotnet is missing: run `npm run fixtures` then `dotnet test dotnet/SqlSchema.slnx`",
-      ).toBe(true);
-    }
+/**
+ * A skipped conformance suite looks identical to a passing one in CI output, which is how a gate
+ * quietly stops gating. This asserts it actually ran — but only where it is meant to.
+ *
+ * The Node matrix job runs without .NET and legitimately has nothing to reconstruct, so the
+ * requirement is opt-in: the conformance job sets SQL_SCHEMA_REQUIRE_CONFORMANCE after producing
+ * the .NET documents, and a local `npm test` behaves like the matrix job.
+ */
+describe.runIf(process.env.SQL_SCHEMA_REQUIRE_CONFORMANCE === "1")("the gate itself", () => {
+  it("actually had documents to reconstruct", () => {
+    expect(
+      existsSync(from),
+      "artifacts/dotnet is missing: run `npm run fixtures`, then `dotnet test dotnet/SqlSchema.slnx`",
+    ).toBe(true);
     expect(cases.length).toBeGreaterThan(0);
   });
 });

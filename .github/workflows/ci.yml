@@ -190,7 +190,12 @@ jobs:
       # artifacts/node; `npm run conformance` diffs the two against the goldens. Running the Node
       # suite first would leave it with nothing to reconstruct.
       - run: dotnet test dotnet/SqlSchema.slnx --configuration Release
+
+      # The flag makes the Node suite assert it actually had documents to reconstruct. Without it a
+      # conformance run with no artifacts would skip silently and report success.
       - run: npm test
+        env:
+          SQL_SCHEMA_REQUIRE_CONFORMANCE: "1"
 
       - name: Diff both languages against the goldens
         run: npm run conformance

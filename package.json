@@ -31,7 +31,9 @@
     "codegen": "node scripts/codegen.mjs",
     "build": "npm run build -w @cairn-tool/sql-schema",
     "clean": "npm run clean -w @cairn-tool/sql-schema",
-    "test": "npm test -w @cairn-tool/sql-schema"
+    "test": "npm test -w @cairn-tool/sql-schema",
+    "format:csharp": "dotnet format dotnet/SqlSchema.slnx",
+    "format:csharp:check": "dotnet format dotnet/SqlSchema.slnx --verify-no-changes --severity error"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",

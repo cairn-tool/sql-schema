@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <!-- This package is the READ side: records, an embedded string, and a source-generated
+         serializer context. Nothing reflective, so it stays clean for a consumer that publishes
+         trimmed or ahead-of-time — and reading a document is what most consumers do. The
+         extractor cannot make this claim, which is exactly why it is a separate package. -->
+    <IsAotCompatible>true</IsAotCompatible>
+    <IsTrimmable>true</IsTrimmable>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <PackageId>CairnTool.SqlSchema</PackageId>
+    <Authors>Bryan Stockus</Authors>
+    <Description>Portable SQL-schema description model, JSON Schema, and canonicalizer.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/cairn-tool/sql-schema</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/cairn-tool/sql-schema</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>sql;schema;dacpac;sqlserver</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- The single canonical copy lives in spec/; this reaches out to it rather than keeping a
+         second one. Embedded so the schema is readable at runtime, and packed under content/ for
+         a consumer that wants the file itself. -->
+    <EmbeddedResource Include="..\..\..\spec\v1\sql-schema.json" Link="sql-schema.json" LogicalName="CairnTool.SqlSchema.sql-schema.json" />
+    <None Include="README.md" Pack="true" PackagePath="/" />
+    <Content Include="..\..\..\spec\v1\sql-schema.json" Pack="true" PackagePath="content/sql-schema.json" />
+  </ItemGroup>
+</Project>

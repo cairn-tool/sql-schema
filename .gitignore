@@ -48,3 +48,6 @@ spec/fixtures/**/bin/
 spec/fixtures/**/obj/
 *.dacpac
 !spec/fixtures/legacy/legacy.dacpac
+
+# dotnet build output (UseArtifactsOutput redirects the whole tree here)
+dotnet/.artifacts/

@@ -1,0 +1,28 @@
+<Project>
+  <!-- One build-output tree at dotnet/.artifacts instead of a bin/ and obj/ beside every project.
+       The condition is defensive: an importing solution can still redirect the whole build to a
+       shared output tree. -->
+  <PropertyGroup Condition=" '$(ArtifactsPath)' == '' ">
+    <UseArtifactsOutput>true</UseArtifactsOutput>
+    <ArtifactsPath>$(MSBuildThisFileDirectory).artifacts</ArtifactsPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <NuGetAudit>true</NuGetAudit>
+  </PropertyGroup>
+
+  <!-- The trim/AOT properties are deliberately NOT here. CairnTool.SqlSchema sets them and stays
+       clean; the DacFx-facing projects cannot, because IsAotCompatible turns on analyzers whose
+       warnings TreatWarningsAsErrors then turns into build failures — on Microsoft's code, which
+       we cannot annotate. Opting in per project makes the extractor correct by omission rather
+       than by override. -->
+
+  <!-- No <Version> anywhere in this tree, deliberately. The version arrives on the `dotnet pack`
+       command line from semantic-release, which is what makes the NuGet packages and the npm
+       package incapable of drifting apart: one version number, computed once. -->
+</Project>

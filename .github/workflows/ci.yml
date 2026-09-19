@@ -75,6 +75,42 @@ jobs:
         with:
           fail-on-severity: high
 
+  fixtures:
+    name: Build fixture dacpacs
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # 8.0.x because spec/fixtures/global.json pins it: Microsoft.Build.Sql 0.1.12-preview is what
+      # the consuming estate uses, and the fixture's job is to be the estate. 10.0.x because the
+      # repository's own projects build on it.
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - run: npm ci
+
+      - name: Build every fixture SQL project
+        run: npm run fixtures
+
+      # Published once here so the jobs that consume them do not each pay for a sqlproj build.
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: fixtures
+          path: artifacts/fixtures
+          retention-days: 5
+
   test-node:
     name: Test (Node ${{ matrix.node }})
     runs-on: ubuntu-latest

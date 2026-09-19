@@ -1,0 +1,10 @@
+<Project>
+  <!-- Central package management is OFF, and Microsoft.Build.Sql is pinned, both copied field for
+       field from the consuming estate's own sql/Directory.Packages.props. The fixture's job is to
+       be the estate: the dacpac the extractor is tested against must be the dacpac the extractor
+       will actually meet. Microsoft.Build.Sql does not play well with CPM, which is why the estate
+       turns it off here and why this does too. -->
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+</Project>

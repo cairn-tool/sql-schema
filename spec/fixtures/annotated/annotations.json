@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1",
+  "descriptions": {
+    "cfg": "Configuration owned by the platform rather than by a store.",
+    "cfg.StoreStatus": "Per-store status, one row per store.",
+    "cfg.StoreStatus.StoreStatusFlags": "Bit flags: 1 ingesting, 2 forecasting, 4 scheduling.",
+    "cfg.StoreStatus.StatusCode": "A=Active, I=Inactive."
+  }
+}

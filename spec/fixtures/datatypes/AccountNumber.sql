@@ -1,0 +1,1 @@
+CREATE TYPE [dt].[AccountNumber] FROM VARCHAR (24) NOT NULL;

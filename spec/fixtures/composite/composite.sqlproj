@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build">
+  <Sdk Name="Microsoft.Build.Sql" Version="0.1.12-preview" />
+  <PropertyGroup>
+    <Name>composite</Name>
+    <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <ModelCollation>1033, CI</ModelCollation>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- The SDK default-globs **/*.sql, which would pull the referenced project's own sources in
+         as if they were this project's — and they then arrive a second time through the
+         ProjectReference, so every element is declared twice. Removing them is what makes this a
+         composite reference rather than a copy. -->
+    <Build Remove="shared\**\*.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="shared\shared.sqlproj">
+      <Name>shared</Name>
+      <SuppressMissingDependenciesErrors>False</SuppressMissingDependenciesErrors>
+    </ProjectReference>
+  </ItemGroup>
+</Project>

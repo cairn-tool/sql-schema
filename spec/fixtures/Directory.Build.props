@@ -1,0 +1,5 @@
+<Project>
+  <!-- Deliberately empty. It stops MSBuild walking further up and picking up a Directory.Build.props
+       belonging to some unrelated tree above the repository. The fixtures must build exactly as the
+       consuming estate builds, which means inheriting nothing from this repository either. -->
+</Project>

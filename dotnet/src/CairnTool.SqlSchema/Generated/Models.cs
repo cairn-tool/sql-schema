@@ -143,9 +143,8 @@ public sealed record SqlEngineInfo {
     public required string? TargetPlatform { get; init; }
 
     /// <summary>
-    /// Collation name, or null when the source carries only a locale identifier. A dacpac carries
-    /// an LCID and comparison flags rather than a name, and this format does not guess at the
-    /// mapping.
+    /// Collation name, e.g. 'SQL_Latin1_General_CP1_CI_AS'. Null only when the source does not
+    /// report one.
     /// </summary>
     [JsonPropertyName("collation")]
     public required string? Collation { get; init; }

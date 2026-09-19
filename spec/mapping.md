@@ -37,12 +37,14 @@ object is either absent or attributed.
 | `source.name`           | `DacPackage.Name`.                                                                                                                                                                                                                              |
 | `source.version`        | `DacPackage.Version`.                                                                                                                                                                                                                           |
 
-A dacpac records its model collation as a locale identifier plus case- and accent-sensitivity
-flags, not as a collation name. `engine.collation` is therefore `null`, `engine.caseSensitive`
-carries the fact that governs identifier comparison, and the raw identifier goes to
-`extensions.sqlserver.modelCollationLcid`. Reconstructing a name such as
-`SQL_Latin1_General_CP1_CI_AS` from an LCID would require a large versioned table and would be
-wrong at the edges.
+The collation is read from the model's `DatabaseOptions` object, which carries it by name. That
+object is otherwise excluded from the document as model-wide configuration rather than
+structure; this one member is the exception.
+
+⚠️ **`ModelCollation` in a `.sqlproj` is ignored by `Microsoft.Build.Sql` 0.1.12-preview.** A
+project declaring `1033, CS` still produces a model whose collation is
+`SQL_Latin1_General_CP1_CI_AS` and whose comparer compares case-insensitively. This was verified
+rather than assumed, and it is why no fixture can exercise a case-sensitive model.
 
 ## Identity
 
@@ -175,7 +177,7 @@ exist, or does not mean the same thing, in at least two engines.
 
 | Object     | Keys                                                                                                                           |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| document   | `modelCollationLcid`                                                                                                           |
+| document   | _(nothing engine-specific hangs off the document yet)_                                                                         |
 | any object | `fromReference` — present only under `--include-referenced`                                                                    |
 | table      | `memoryOptimized`, `durability`, `fileGroup`, `textImageFileGroup`, `partitionScheme`, `changeTrackingEnabled`, `ledger`       |
 | column     | `hidden`, `sparse`, `rowGuidCol`, `notForReplication`, `masked`, `maskingFunction`, `xmlSchemaCollection`, `isFileStream`      |

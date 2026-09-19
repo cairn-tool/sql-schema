@@ -1,13 +1,14 @@
 {
   "schemaVersion": "1",
   "tool": {
-    "name": "sqlschema"
+    "name": "sqlschema",
+    "version": "0.0.0"
   },
   "engine": {
     "name": "sqlserver",
     "version": "12",
     "targetPlatform": "SqlAzure",
-    "collation": null,
+    "collation": "SQL_Latin1_General_CP1_CI_AS",
     "caseSensitive": false
   },
   "source": {
@@ -89,7 +90,7 @@
         "app",
         "vActiveStore"
       ],
-      "description": null,
+      "description": "Stores that are currently active.",
       "columns": [
         {
           "name": "StoreId",
@@ -132,7 +133,7 @@
         "fn_StoreName"
       ],
       "kind": "scalarFunction",
-      "description": null,
+      "description": "Returns a store\u0027s display name.",
       "parameters": [
         {
           "name": "@StoreId",
@@ -162,7 +163,7 @@
         "fn_StoresIn"
       ],
       "kind": "tableValuedFunction",
-      "description": null,
+      "description": "Every store with the given store number.",
       "parameters": [
         {
           "name": "@StoreNumber",
@@ -205,7 +206,7 @@
         "usp_UpsertStore"
       ],
       "kind": "procedure",
-      "description": null,
+      "description": "Inserts or updates a store.",
       "parameters": [
         {
           "name": "@StoreId",
@@ -227,7 +228,7 @@
           },
           "nullable": true,
           "mode": "in",
-          "defaultExpression": "N'unnamed'"
+          "defaultExpression": "N\u0027unnamed\u0027"
         },
         {
           "name": "@Stores",
@@ -261,7 +262,7 @@
         "app",
         "StoreNumbers"
       ],
-      "description": null,
+      "description": "Allocates store numbers.",
       "dataType": {
         "name": "bigint",
         "userDefined": false,
@@ -284,7 +285,7 @@
         "StoreIdList"
       ],
       "kind": "table",
-      "description": null,
+      "description": "A set of store ids, for passing to a procedure.",
       "columns": [
         {
           "name": "StoreId",
@@ -302,7 +303,7 @@
         "app",
         "Shop"
       ],
-      "description": null,
+      "description": "Legacy name for app.Store.",
       "target": "[app].[Store]",
       "targetPath": [
         "app",
@@ -318,7 +319,7 @@
         "tr_Store_Audit"
       ],
       "kind": "dml",
-      "description": null,
+      "description": "Writes an audit row whenever a store changes.",
       "table": "app.Store",
       "timing": "after",
       "events": [

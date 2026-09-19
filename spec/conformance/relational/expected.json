@@ -1,13 +1,14 @@
 {
   "schemaVersion": "1",
   "tool": {
-    "name": "sqlschema"
+    "name": "sqlschema",
+    "version": "0.0.0"
   },
   "engine": {
     "name": "sqlserver",
     "version": "12",
     "targetPlatform": "SqlAzure",
-    "collation": null,
+    "collation": "SQL_Latin1_General_CP1_CI_AS",
     "caseSensitive": false
   },
   "source": {
@@ -207,6 +208,16 @@
             "SalesItemId"
           ],
           "filter": "[SupersedesId] IS NULL"
+        },
+        {
+          "name": "UX_items_SalesItemDetail_Supersedes",
+          "unique": true,
+          "columns": [
+            {
+              "name": "SupersedesId"
+            }
+          ],
+          "filter": "[SupersedesId] IS NOT NULL"
         }
       ]
     },
@@ -245,7 +256,7 @@
           "name": "CK_items_SalesItemTag_Tag",
           "kind": "check",
           "columns": [],
-          "expression": "LEN([Tag]) > 0"
+          "expression": "LEN([Tag]) \u003E 0"
         },
         {
           "name": "FK_items_SalesItemTag_SalesItem",

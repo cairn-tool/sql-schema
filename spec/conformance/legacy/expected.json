@@ -1,13 +1,14 @@
 {
   "schemaVersion": "1",
   "tool": {
-    "name": "sqlschema"
+    "name": "sqlschema",
+    "version": "0.0.0"
   },
   "engine": {
     "name": "sqlserver",
     "version": "12",
     "targetPlatform": "SqlAzure",
-    "collation": null,
+    "collation": "SQL_Latin1_General_CP1_CI_AS",
     "caseSensitive": false
   },
   "source": {

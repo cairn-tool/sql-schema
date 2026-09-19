@@ -57,9 +57,17 @@ internal static class Repo {
         File.WriteAllText(Path.Combine(directory, $"{name}.json"), json);
     }
 
+    /// <summary>The document as written: a real, complete, schema-valid document.</summary>
+    public static string Serialize(SqlSchemaDescription document) =>
+        JsonSerializer.Serialize(document, SqlSchemaJsonContext.Default.SqlSchemaDescription);
+
+    /// <summary>
+    /// The comparison form. Canonicalization removes tool.version, so this is what a golden holds
+    /// and what two documents are diffed through — but it is not a document a consumer can read
+    /// back, which is why the artifact written for the other language is the serialized form.
+    /// </summary>
     public static string Canonical(SqlSchemaDescription document) =>
-        SqlSchemaCanonicalizer.CanonicalizeJson(
-            JsonSerializer.Serialize(document, SqlSchemaJsonContext.Default.SqlSchemaDescription));
+        SqlSchemaCanonicalizer.CanonicalizeJson(Serialize(document));
 
     public static ExtractOptions Options(string name) => new() {
         GeneratorName = "sqlschema",

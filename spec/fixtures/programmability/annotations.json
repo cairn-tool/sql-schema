@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1",
+  "descriptions": {
+    "app.vActiveStore": "Stores that are currently active.",
+    "app.usp_UpsertStore": "Inserts or updates a store.",
+    "app.fn_StoreName": "Returns a store's display name.",
+    "app.fn_StoresIn": "Every store with the given store number.",
+    "app.StoreNumbers": "Allocates store numbers.",
+    "app.Shop": "Legacy name for app.Store.",
+    "app.StoreIdList": "A set of store ids, for passing to a procedure.",
+    "app.tr_Store_Audit": "Writes an audit row whenever a store changes."
+  }
+}

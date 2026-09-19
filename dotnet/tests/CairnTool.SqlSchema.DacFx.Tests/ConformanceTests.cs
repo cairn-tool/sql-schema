@@ -20,14 +20,19 @@ public class ConformanceTests {
     [MemberData(nameof(Cases))]
     public void MatchesItsGolden(string name) {
         var document = DacpacExtractor.Extract(Repo.Dacpac(name), Repo.Options(name));
-        var actual = Repo.Canonical(document);
 
-        Repo.WriteArtifact(name, actual);
+        // The artifact is the document as written -- complete and schema-valid -- because the
+        // other language validates it before reconstructing it. The golden is the canonical form,
+        // which has tool.version removed and therefore does not validate.
+        Repo.WriteArtifact(name, Repo.Serialize(document));
 
         var golden = Repo.Golden(name);
         golden.Should().NotBeNull(
             $"spec/conformance/{name}/expected.json is missing. Run `npm run goldens` to write it, "
             + "then review the diff before committing it.");
-        actual.Should().Be(golden);
+
+        // Both sides go through canonicalization, which drops tool.version. A golden is therefore
+        // a complete, schema-valid document that survives a release of the producer that wrote it.
+        SqlSchemaCanonicalizer.CanonicalizeJson(golden!).Should().Be(Repo.Canonical(document));
     }
 }

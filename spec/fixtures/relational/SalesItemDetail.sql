@@ -19,3 +19,10 @@ CREATE NONCLUSTERED INDEX [IX_items_SalesItemDetail_Effective]
     ON [items].[SalesItemDetail] ([EffectiveDate] DESC)
     INCLUDE ([SalesItemId])
     WHERE [SupersedesId] IS NULL;
+GO
+
+-- A UNIQUE index rather than a UNIQUE constraint. They are different objects in the model, and
+-- without one here `SqlIndex.unique` would never be observed true by any golden.
+CREATE UNIQUE NONCLUSTERED INDEX [UX_items_SalesItemDetail_Supersedes]
+    ON [items].[SalesItemDetail] ([SupersedesId])
+    WHERE [SupersedesId] IS NOT NULL;

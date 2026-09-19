@@ -4,6 +4,10 @@
   <PropertyGroup>
     <Name>programmability</Name>
     <DSP>Microsoft.Data.Tools.Schema.Sql.SqlAzureV12DatabaseSchemaProvider</DSP>
+    <!-- ⚠️ Microsoft.Build.Sql 0.1.12-preview ignores ModelCollation. Setting it to "1033, CS"
+         here produced a model whose collation was still SQL_Latin1_General_CP1_CI_AS and whose
+         comparer still compared case-insensitively, so engine.caseSensitive stays untestable by
+         any fixture. Left at the estate's value; see UNEXERCISED in scripts/coverage.mjs. -->
     <ModelCollation>1033, CI</ModelCollation>
   </PropertyGroup>
 </Project>

@@ -36,7 +36,9 @@
     "format:csharp:check": "dotnet format dotnet/SqlSchema.slnx --verify-no-changes --severity error",
     "fixtures": "node scripts/fixtures.mjs",
     "fixtures:check": "node scripts/fixtures.mjs --check",
-    "goldens": "node scripts/goldens.mjs"
+    "goldens": "node scripts/goldens.mjs",
+    "conformance": "node scripts/conformance.mjs",
+    "coverage": "node scripts/coverage.mjs"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",

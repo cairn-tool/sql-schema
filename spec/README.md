@@ -109,11 +109,10 @@ the SDK version, and any timestamp. The target-platform string is normalized int
 detail, not a fact about the database. A model targeting it reports the platform as `SqlAzure` and
 the engine version as `12`; those are the two values recorded.
 
-`engine.collation` is a collation _name_. A dacpac carries a locale identifier and comparison flags
-instead, so for a dacpac-sourced document `collation` is `null`, `caseSensitive` carries the fact a
-consumer actually needs, and the raw identifier goes to `extensions.sqlserver.modelCollationLcid`.
-This format does not attempt an LCID-to-collation-name mapping: that table is large, versioned, and
-would be wrong at the edges.
+`engine.collation` is a collation _name_, such as `SQL_Latin1_General_CP1_CI_AS`. It is `null`
+only when the source does not report one. `engine.caseSensitive` is **derived**, not read: a
+producer probes the model's own comparer rather than parsing `_CS_` out of the name, because the
+comparer is what the engine actually compares identifiers with.
 
 ## Identity
 

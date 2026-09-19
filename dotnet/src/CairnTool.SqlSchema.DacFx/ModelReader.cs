@@ -104,17 +104,21 @@ internal sealed class ModelReader(TSqlModel model, ExtractOptions options) {
     }
 
     private SqlEngineInfo ReadEngine() {
-        var comparer = model.CollationComparer;
-        // The comparer is the only public surface that answers the question the format actually
-        // needs. A dacpac records a locale identifier and comparison flags rather than a collation
-        // name, and reconstructing a name from an LCID needs a large versioned table that would be
-        // wrong at the edges -- so `collation` stays null and `caseSensitive` carries the fact.
-        var caseSensitive = !comparer.Equals("a", "A");
+        // The model's DatabaseOptions carries the collation by name, e.g.
+        // SQL_Latin1_General_CP1_CI_AS -- so there is no need to reconstruct one from a locale
+        // identifier, and no need to leave the member null.
+        var options = model.GetObjects(DacQueryScopes.All, ModelSchema.DatabaseOptions).FirstOrDefault();
+        var collation = options is null ? null : Text(options, DatabaseOptions.Collation);
+
+        // Derived by probing the comparer rather than by parsing "_CS_" out of the name, because
+        // the comparer is what the model itself compares identifiers with.
+        var caseSensitive = !model.CollationComparer.Equals("a", "A");
+
         return new SqlEngineInfo {
             Name = "sqlserver",
             Version = model.EngineVersion.ToString(System.Globalization.CultureInfo.InvariantCulture),
             TargetPlatform = model.Version.ToString(),
-            Collation = null,
+            Collation = string.IsNullOrEmpty(collation) ? null : collation,
             CaseSensitive = caseSensitive,
         };
     }

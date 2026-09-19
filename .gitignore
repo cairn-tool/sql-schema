@@ -1,0 +1,50 @@
+# Build output
+dist/
+*.tsbuildinfo
+*.js.map
+bin/
+obj/
+.artifacts/
+artifacts/
+
+# Dependencies
+node_modules/
+
+# Test / tooling caches
+coverage/
+.vitest/
+.eslintcache
+
+# Packing artifacts
+*.tgz
+*.nupkg
+dist-nuget/
+
+# OS / editor
+.DS_Store
+*.swp
+.vs/
+*.user
+
+# Plan editor scratch. Other .cursor/ files (rules, skills) may be committed.
+.cursor/plans/
+
+# Husky internals (generated on install)
+.husky/_/
+
+# NuGet
+*.snupkg
+project.lock.json
+
+# Fixture build output. The `.sql` sources and the `.sqlproj` are committed; the
+# `.dacpac` they produce is not -- a dacpac is a zip whose `Origin.xml` carries
+# checksums and a build timestamp, so it is not byte-reproducible and its diff is
+# unreadable. `npm run fixtures` rebuilds them into artifacts/fixtures/.
+#
+# The one exception is spec/fixtures/legacy/legacy.dacpac, negated below: a frozen
+# binary that proves today's extractor still reads a dacpac built by a toolchain we
+# no longer run. Nothing else in spec/fixtures/ may be a committed dacpac.
+spec/fixtures/**/bin/
+spec/fixtures/**/obj/
+*.dacpac
+!spec/fixtures/legacy/legacy.dacpac

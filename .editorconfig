@@ -1,0 +1,30 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+# Trailing double-space is a hard line break in markdown
+trim_trailing_whitespace = false
+
+[*.{cs,csproj,props,slnx}]
+indent_size = 4
+
+# K&R: opening brace on the same line as the statement it belongs to.
+[*.cs]
+csharp_new_line_before_open_brace = none
+csharp_new_line_before_else = false
+csharp_new_line_before_catch = false
+csharp_new_line_before_finally = false
+csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_anonymous_types = true
+csharp_new_line_between_query_expression_clauses = true
+dotnet_diagnostic.IDE0055.severity = error
+
+[Makefile]
+indent_style = tab

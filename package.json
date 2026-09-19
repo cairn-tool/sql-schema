@@ -1,0 +1,41 @@
+{
+  "name": "sql-schema",
+  "private": true,
+  "type": "module",
+  "description": "Portable SQL-schema description specification, with a DacPac extractor for SQL Server",
+  "license": "MIT",
+  "author": "Bryan Stockus",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cairn-tool/sql-schema.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cairn-tool/sql-schema/issues"
+  },
+  "homepage": "https://github.com/cairn-tool/sql-schema#readme",
+  "engines": {
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.0",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.9.1",
+    "eslint-config-prettier": "^10.1.8",
+    "husky": "^9.1.7",
+    "prettier": "^3.4.0",
+    "typescript": "^5.7.0",
+    "typescript-eslint": "^8.68.0"
+  }
+}

@@ -1,0 +1,14 @@
+dist/
+node_modules/
+coverage/
+artifacts/
+.artifacts/
+bin/
+obj/
+package-lock.json
+CHANGELOG.md
+*.slnx
+
+# SQL sources and MSBuild project files are not Prettier's to format, and the
+# fixture tree deliberately mirrors the estate's own formatting rather than ours.
+spec/fixtures/**

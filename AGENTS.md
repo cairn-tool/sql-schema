@@ -149,14 +149,13 @@ why commitlint is a gate: a commit that does not parse produces no release.
 command line. That is what makes the npm package and the four NuGet packages incapable of drifting
 apart. There is no `<Version>` anywhere in `dotnet/`, deliberately.
 
-nuget.org has no stored credential: the key is exchanged from this job's OIDC token under a
-trusted-publishing policy bound to this repository **and to `release.yml` by filename** — renaming
-that file breaks publishing. npm currently uses `NPM_TOKEN`, an organization secret.
+Neither registry has a stored credential. Both authenticate by exchanging this job's OIDC token
+against a trusted-publishing policy bound to this repository **and to `release.yml` by filename** —
+renaming that file breaks publishing on both. There is no `NPM_TOKEN` and no `NUGET_API_KEY`
+secret, and their absence is the point: the npm plugin falls back to a token when one is set, so
+not setting one is what guarantees a publish cannot quietly succeed on a long-lived credential.
 
-⚠️ **`NPM_TOKEN` is a bootstrap, not the destination.** npm only allows a trusted publisher to be
-configured on a package that already exists, so `@cairn-tool/sql-schema` cannot use OIDC until it
-has been published once. After the first release, register the trusted publisher and drop
-`NPM_TOKEN`/`NODE_AUTH_TOKEN` from the workflow.
+A missing or misnamed trusted publisher fails during `verifyConditions`, before a tag exists.
 
 The tag, the changelog commit and the GitHub Release are written with the built-in `GITHUB_TOKEN`,
 which is why the job takes `contents: write`.

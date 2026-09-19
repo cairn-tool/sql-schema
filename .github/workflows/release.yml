@@ -82,17 +82,20 @@ jobs:
         with:
           user: bstockus
 
-      # ⚠️ NPM_TOKEN is a bootstrap, not the intended path. npm only allows a
-      # trusted publisher to be configured on a package that already exists, so
-      # @cairn-tool/sql-schema cannot use OIDC until it has been published once.
-      # Once it exists: register the trusted publisher against this repository
-      # and this workflow filename, then drop NPM_TOKEN and NODE_AUTH_TOKEN
-      # below. nuget.org needs no such bootstrap -- its policy admits new
-      # package IDs, so all four NuGet packages publish on OIDC from the start.
+      # Neither registry has a stored credential any more. npm authenticates by
+      # OIDC against a trusted publisher registered for this repository and this
+      # workflow filename, and nuget.org by the key exchanged above.
+      #
+      # ⚠️ No NPM_TOKEN here, deliberately. The plugin attempts the OIDC exchange
+      # first and falls back to NPM_TOKEN when one is set -- so leaving the
+      # variable out is the thing that guarantees a publish can never quietly
+      # succeed on a long-lived credential instead. A missing or misnamed trusted
+      # publisher surfaces as a 404 during verifyConditions, before a tag exists.
+      #
+      # GITHUB_TOKEN is still needed: it writes the tag, the changelog commit and
+      # the GitHub Release.
       - name: semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
         run: npx semantic-release

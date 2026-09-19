@@ -20,7 +20,7 @@
     "packages/*"
   ],
   "scripts": {
-    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "typecheck": "npm run typecheck -w @cairn-tool/sql-schema && tsc --noEmit -p tsconfig.json",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -28,7 +28,10 @@
     "prepare": "husky",
     "spec:lint": "node scripts/spec-lint.mjs",
     "codegen:check": "node scripts/codegen.mjs --check",
-    "codegen": "node scripts/codegen.mjs"
+    "codegen": "node scripts/codegen.mjs",
+    "build": "npm run build -w @cairn-tool/sql-schema",
+    "clean": "npm run clean -w @cairn-tool/sql-schema",
+    "test": "npm test -w @cairn-tool/sql-schema"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",

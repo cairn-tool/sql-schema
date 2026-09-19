@@ -1,0 +1,57 @@
+{
+  "name": "@cairn-tool/sql-schema",
+  "version": "0.0.0-development",
+  "type": "module",
+  "description": "Portable SQL-schema description types, JSON Schema, validator, and canonicalizer",
+  "license": "MIT",
+  "author": "Bryan Stockus",
+  "keywords": [
+    "sql",
+    "schema",
+    "dacpac",
+    "sqlserver"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cairn-tool/sql-schema.git",
+    "directory": "packages/sql-schema"
+  },
+  "bugs": {
+    "url": "https://github.com/cairn-tool/sql-schema/issues"
+  },
+  "homepage": "https://github.com/cairn-tool/sql-schema#readme",
+  "engines": {
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsc && cp src/sql-schema.json dist/sql-schema.json",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "pretest": "npm run build",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "typescript": "^5.7.0",
+    "vitest": "^5.0.0"
+  }
+}

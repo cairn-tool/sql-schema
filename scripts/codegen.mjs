@@ -143,6 +143,11 @@ const csharp = dedentFileScopedNamespace(
   }),
 );
 
+// The npm package ships the schema document as a runtime export, so it needs its own copy inside
+// `src`. cli-schema commits that copy by hand and asserts equality in a test; settling it here
+// instead means `codegen:check` is what catches a divergence, which is one gate rather than two.
+settle(join(ROOT, "packages/sql-schema/src/sql-schema.json"), readFileSync(SPEC, "utf8"));
+
 const csharpPath = join(ROOT, "dotnet/src/CairnTool.SqlSchema/Generated/Models.cs");
 assertCSharpStyle(csharp, csharpPath);
 settle(csharpPath, csharp);

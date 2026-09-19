@@ -46,6 +46,13 @@ jobs:
       - name: TypeScript
         run: npm run typecheck
 
+      # The schema is the source of truth for both generated model packages, and the C# emitter is
+      # hand-written -- it will happily emit code that does not compile if the schema grows a
+      # construct it has no branch for. This turns those constraints into a readable failure here
+      # rather than a compiler error inside a generated file nobody is meant to read.
+      - name: Lint the specification
+        run: npm run spec:lint
+
       - name: Dependency review
         if: github.event_name == 'pull_request'
         uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0

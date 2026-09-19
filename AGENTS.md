@@ -149,16 +149,17 @@ why commitlint is a gate: a commit that does not parse produces no release.
 command line. That is what makes the npm package and the four NuGet packages incapable of drifting
 apart. There is no `<Version>` anywhere in `dotnet/`, deliberately.
 
-Neither registry has a stored credential. Both use OIDC trusted publishing, and the policies are
-bound to this repository **and to `release.yml` by filename** — renaming that file breaks
-publishing. Only `RELEASE_APP_ID` and `RELEASE_APP_PRIVATE_KEY` exist, for the App whose
-installation token authenticates the tag, the changelog commit and the release.
+nuget.org has no stored credential: the key is exchanged from this job's OIDC token under a
+trusted-publishing policy bound to this repository **and to `release.yml` by filename** — renaming
+that file breaks publishing. npm currently uses `NPM_TOKEN`, an organization secret.
 
-⚠️ **The first npm publish needs a one-off token.** npm only lets a trusted publisher be
+⚠️ **`NPM_TOKEN` is a bootstrap, not the destination.** npm only allows a trusted publisher to be
 configured on a package that already exists, so `@cairn-tool/sql-schema` cannot use OIDC until it
-has been published once. Add `NPM_TOKEN`, release, register the trusted publisher on npmjs.com,
-then delete the secret. nuget.org has no such bootstrap: its policy admits new package IDs, so all
-four NuGet packages publish on OIDC from the first release.
+has been published once. After the first release, register the trusted publisher and drop
+`NPM_TOKEN`/`NODE_AUTH_TOKEN` from the workflow.
+
+The tag, the changelog commit and the GitHub Release are written with the built-in `GITHUB_TOKEN`,
+which is why the job takes `contents: write`.
 
 The MSBuild package carries the tool as its payload, and its pack step forwards `-p:Version` to the
 publish that produces it. Without that the payload would be built at the default 1.0.0 while the

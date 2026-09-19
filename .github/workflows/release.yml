@@ -1,0 +1,118 @@
+name: Release
+
+# Gated on CI rather than on push. Waiting for CI means the whole support matrix
+# has passed -- including the Windows and ARM MSBuild integration jobs, which are
+# the ones most likely to catch a packaging mistake -- and it lets this job skip
+# re-running the tests.
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions: {}
+
+env:
+  # `npm ci` runs `prepare: husky`, which would install the commit-msg hook into
+  # the runner's checkout -- and that hook would then reject semantic-release's
+  # own release commit. Git hooks have no purpose in CI.
+  HUSKY: 0
+
+jobs:
+  release:
+    name: Publish npm and NuGet
+    runs-on: ubuntu-latest
+    # Deliberately thin. Everything semantic-release *writes* goes through the
+    # App installation token minted below, not through GITHUB_TOKEN, because a
+    # branch ruleset can only grant a bypass to an org-installed App -- and
+    # github-actions[bot] is not one.
+    permissions:
+      contents: read # checkout only
+      id-token: write # OIDC trusted publishing (npm and nuget.org), and the provenance attestation
+    # Only for a green CI run on a push to main, not for PR CI runs.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main')
+    steps:
+      # A short-lived installation token for the release App. It expires in an
+      # hour, so nothing long-lived is handed to the job beyond the App's own
+      # private key.
+      - name: Mint a release token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          # The secret holds the numeric App ID, not the Client ID. The action
+          # forwards either unchanged as the JWT issuer and GitHub accepts both;
+          # `app-id` is the same input under a deprecated name.
+          client-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Explicit ref: a workflow_run checkout otherwise defaults to the
+          # default branch tip anyway, and naming it keeps us on a branch rather
+          # than a detached HEAD, which semantic-release needs in order to push.
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          registry-url: https://registry.npmjs.org
+          scope: "@cairn-tool"
+
+      # 8.0.x as well as 10.0.x: every package targets net8.0, and packing the
+      # MSBuild package publishes the tool for net8.0 as its payload.
+      - uses: actions/setup-dotnet@67a3573c9a986a3f9c594539f4ab511d57bb3ce9 # v4.3.1
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      # Trusted publishing needs npm >= 11.5.1, so the OIDC exchange is
+      # performed by a client that supports it regardless of what Node bundles.
+      - name: Upgrade npm for trusted publishing
+        run: npm install -g npm@12
+
+      - run: npm ci
+      - run: npm run build
+
+      # Exchanges this job's OIDC token for a short-lived nuget.org API key under
+      # a trusted-publishing policy on the `user` account. The policy is bound to
+      # this repository and this workflow's filename, so renaming this file
+      # breaks publishing. There is no stored NuGet secret. `--skip-duplicate` in
+      # the publish command makes a re-run safe.
+      - name: Log in to nuget.org
+        id: nuget-login
+        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
+        with:
+          user: bstockus
+
+      # npm authentication is OIDC only. The trusted publisher on npmjs.com is
+      # registered against this repository and this workflow's filename, and no
+      # token is handed to the job: the plugin attempts the OIDC exchange first
+      # and would fall back to NPM_TOKEN if one were set, so leaving the variable
+      # out is what guarantees a publish never silently succeeds on a credential.
+      #
+      # ⚠️ npm only lets a trusted publisher be configured on a package that
+      # already exists, so the FIRST publish of @cairn-tool/sql-schema needs a
+      # one-off NPM_TOKEN. Add it, release once, register the trusted publisher,
+      # then delete the secret. nuget.org has no such bootstrap: its policy
+      # allows new package IDs, so all four NuGet packages publish on OIDC from
+      # the start.
+      - name: semantic-release
+        env:
+          # The App installation token, not GITHUB_TOKEN: it authenticates the
+          # tag, the CHANGELOG commit and the GitHub Release. The two registries
+          # are separate identities again, each established by its OIDC exchange.
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          NUGET_API_KEY: ${{ steps.nuget-login.outputs.NUGET_API_KEY }}
+        run: npx semantic-release

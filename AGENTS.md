@@ -140,6 +140,31 @@ npm run conformance && npm run coverage
 changing means the wire format moved, which is a bug in the change rather than an intended outcome.
 `git diff spec/conformance/` must come back empty.
 
+## Releasing
+
+semantic-release, off a green CI run on `main`. The commit subjects decide the version, which is
+why commitlint is a gate: a commit that does not parse produces no release.
+
+**One version number across all five packages**, computed once and passed to `dotnet pack` on the
+command line. That is what makes the npm package and the four NuGet packages incapable of drifting
+apart. There is no `<Version>` anywhere in `dotnet/`, deliberately.
+
+Neither registry has a stored credential. Both use OIDC trusted publishing, and the policies are
+bound to this repository **and to `release.yml` by filename** — renaming that file breaks
+publishing. Only `RELEASE_APP_ID` and `RELEASE_APP_PRIVATE_KEY` exist, for the App whose
+installation token authenticates the tag, the changelog commit and the release.
+
+⚠️ **The first npm publish needs a one-off token.** npm only lets a trusted publisher be
+configured on a package that already exists, so `@cairn-tool/sql-schema` cannot use OIDC until it
+has been published once. Add `NPM_TOKEN`, release, register the trusted publisher on npmjs.com,
+then delete the secret. nuget.org has no such bootstrap: its policy admits new package IDs, so all
+four NuGet packages publish on OIDC from the first release.
+
+The MSBuild package carries the tool as its payload, and its pack step forwards `-p:Version` to the
+publish that produces it. Without that the payload would be built at the default 1.0.0 while the
+package carried the real version, and every document written through MSBuild would report the
+wrong `tool.version`.
+
 ## The spec
 
 [`spec/README.md`](spec/README.md) is normative. `schemaVersion` is hand-owned and independent of

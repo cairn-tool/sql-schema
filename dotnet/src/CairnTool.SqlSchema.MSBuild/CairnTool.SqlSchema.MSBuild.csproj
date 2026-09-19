@@ -45,7 +45,11 @@
   </PropertyGroup>
 
   <Target Name="PublishToolPayload">
-    <Exec Command="dotnet publish &quot;$(MSBuildThisFileDirectory)../CairnTool.SqlSchema.Tool/CairnTool.SqlSchema.Tool.csproj&quot; -c $(Configuration) -f net8.0 -o &quot;$(ToolPayload)&quot; --nologo -v quiet"
+    <!-- -p:Version is forwarded deliberately. semantic-release passes the release version to
+         `dotnet pack`, and without passing it on the payload would be built at the default 1.0.0
+         while the package carried the real version. The tool reports its own assembly version as
+         tool.version in every document it writes, so the two must agree. -->
+    <Exec Command="dotnet publish &quot;$(MSBuildThisFileDirectory)../CairnTool.SqlSchema.Tool/CairnTool.SqlSchema.Tool.csproj&quot; -c $(Configuration) -f net8.0 -o &quot;$(ToolPayload)&quot; -p:Version=$(Version) --nologo -v quiet"
           StandardOutputImportance="low" />
   </Target>
 

@@ -57,6 +57,11 @@ jobs:
       - name: Lint the specification
         run: npm run spec:lint
 
+      # `--` inside an XML comment is illegal, and MSBuild refuses to load the project rather than
+      # warning. It has broken this repository three times; it is a gate now rather than a habit.
+      - name: Check XML comments
+        run: npm run xml:check
+
       # The model types in both languages are generated from spec/v1/sql-schema.json. A spec edited
       # without regenerating leaves the published types describing a document shape that no longer
       # exists -- and these packages are consumed by other people's builds.

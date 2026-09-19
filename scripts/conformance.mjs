@@ -100,6 +100,32 @@ for (const name of cases) {
   if (!failures.some((f) => f.startsWith(`${name}:`))) console.log(`ok ${name}`);
 }
 
+// ---- the tool's own contract -----------------------------------------------------------------
+//
+// `sqlschema describe --format json` emits a cli-schema document, not a sql-schema one. Validating
+// it against that repository's schema -- resolved from the installed package rather than vendored
+// -- is what catches a cli-schema major release changing this payload, and what catches a command
+// being added to the tool without a contract.
+const describeGolden = join(ROOT, "spec/cli/describe.json");
+if (existsSync(describeGolden)) {
+  const { validate: validateCli } = await import("@cairn-tool/cli-schema");
+  const payload = read(describeGolden);
+  const result = validateCli(payload);
+  if (!result.valid) {
+    const detail = result.errors.map((e) => `${e.instancePath || "/"} ${e.message}`).join("; ");
+    fail(`describe: spec/cli/describe.json does not validate against cli-schema -- ${detail}`);
+  } else {
+    const undeclared = payload.commands.filter((c) => c.stability === "undeclared");
+    if (undeclared.length > 0) {
+      fail(`describe: ${undeclared.map((c) => c.id).join(", ")} declare no contract`);
+    } else {
+      console.log(`ok describe (${payload.commands.length} commands, against cli-schema)`);
+    }
+  }
+} else {
+  fail("describe: spec/cli/describe.json is missing (run `npm run goldens`)");
+}
+
 if (failures.length > 0) {
   console.error(`\n${failures.length} conformance failure(s):\n`);
   for (const failure of failures) console.error(`  ${failure}`);

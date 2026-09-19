@@ -2,10 +2,12 @@
   <Folder Name="/src/">
     <Project Path="src/CairnTool.SqlSchema/CairnTool.SqlSchema.csproj" />
     <Project Path="src/CairnTool.SqlSchema.DacFx/CairnTool.SqlSchema.DacFx.csproj" />
+    <Project Path="src/CairnTool.SqlSchema.Tool/CairnTool.SqlSchema.Tool.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/CairnTool.SqlSchema.Tests/CairnTool.SqlSchema.Tests.csproj" />
     <Project Path="tests/CairnTool.SqlSchema.DacFx.Tests/CairnTool.SqlSchema.DacFx.Tests.csproj" />
+    <Project Path="tests/CairnTool.SqlSchema.Tool.Tests/CairnTool.SqlSchema.Tool.Tests.csproj" />
   </Folder>
   <Folder Name="/_SolutionFolder/">
     <File Path="Directory.Build.props" />

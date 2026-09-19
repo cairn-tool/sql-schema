@@ -1,0 +1,314 @@
+{
+  "schemaVersion": "1",
+  "tool": {
+    "name": "sqlschema",
+    "version": "1.0.0"
+  },
+  "formatShorthands": {},
+  "schemas": [],
+  "commands": [
+    {
+      "id": "extract",
+      "path": [
+        "extract"
+      ],
+      "description": "Read a .dacpac and write a sql-schema document",
+      "usage": "sqlschema extract [options] \u003Cdacpac\u003E",
+      "arguments": [
+        {
+          "name": "dacpac",
+          "description": "Path to the .dacpac to read",
+          "arity": {
+            "min": 1,
+            "max": 1
+          },
+          "valueType": "string",
+          "allowedValues": null
+        }
+      ],
+      "options": [
+        {
+          "name": "--output",
+          "aliases": [
+            "-o"
+          ],
+          "description": "Where to write the document. Omitted, it goes to stdout",
+          "valueName": null,
+          "arity": {
+            "min": 1,
+            "max": 1
+          },
+          "required": false,
+          "negatable": false,
+          "valueType": "string",
+          "allowedValues": null,
+          "recursive": false
+        },
+        {
+          "name": "--annotations",
+          "aliases": [],
+          "description": "An annotation document whose descriptions are merged into the result",
+          "valueName": null,
+          "arity": {
+            "min": 1,
+            "max": 1
+          },
+          "required": false,
+          "negatable": false,
+          "valueType": "string",
+          "allowedValues": null,
+          "recursive": false
+        },
+        {
+          "name": "--schema",
+          "aliases": [],
+          "description": "Only this schema. Repeatable",
+          "valueName": null,
+          "arity": {
+            "min": 1,
+            "max": null
+          },
+          "required": false,
+          "negatable": false,
+          "valueType": "string",
+          "allowedValues": null,
+          "recursive": false
+        },
+        {
+          "name": "--exclude-schema",
+          "aliases": [],
+          "description": "Drop this schema. Repeatable",
+          "valueName": null,
+          "arity": {
+            "min": 1,
+            "max": null
+          },
+          "required": false,
+          "negatable": false,
+          "valueType": "string",
+          "allowedValues": null,
+          "recursive": false
+        },
+        {
+          "name": "--include-referenced",
+          "aliases": [],
+          "description": "Include objects from referenced packages, each marked with its origin",
+          "valueName": null,
+          "arity": {
+            "min": 0,
+            "max": 1
+          },
+          "required": false,
+          "negatable": false,
+          "valueType": "boolean",
+          "allowedValues": null,
+          "recursive": false
+        },
+        {
+          "name": "--database-name",
+          "aliases": [],
+          "description": "Name recorded in source.name. Defaults to the package\u0027s own",
+          "valueName": null,
+          "arity": {
+            "min": 1,
+            "max": 1
+          },
+          "required": false,
+          "negatable": false,
+          "valueType": "string",
+          "allowedValues": null,
+          "recursive": false
+        },
+        {
+          "name": "--check",
+          "aliases": [],
+          "description": "Write nothing; exit 2 if --output differs from what would be written",
+          "valueName": null,
+          "arity": {
+            "min": 0,
+            "max": 1
+          },
+          "required": false,
+          "negatable": false,
+          "valueType": "boolean",
+          "allowedValues": null,
+          "recursive": false
+        },
+        {
+          "name": "--format",
+          "aliases": [],
+          "description": "Output format: json",
+          "valueName": "fmt",
+          "arity": {
+            "min": 1,
+            "max": 1
+          },
+          "required": false,
+          "negatable": false,
+          "valueType": "string",
+          "allowedValues": null,
+          "recursive": false,
+          "default": "json"
+        }
+      ],
+      "subcommands": [],
+      "formats": [
+        "json"
+      ],
+      "defaultFormat": "json",
+      "formatConfigurable": false,
+      "outputSchema": "https://github.com/cairn-tool/sql-schema/v1/sql-schema.json",
+      "exitCodes": [
+        {
+          "code": 0,
+          "meaning": "Success."
+        },
+        {
+          "code": 1,
+          "meaning": "The operation failed."
+        },
+        {
+          "code": 2,
+          "meaning": "The document is invalid, or --check found a difference."
+        }
+      ],
+      "stream": {
+        "success": "stdout"
+      },
+      "writes": true,
+      "stability": "stable"
+    },
+    {
+      "id": "validate",
+      "path": [
+        "validate"
+      ],
+      "description": "Validate a document against the sql-schema JSON Schema",
+      "usage": "sqlschema validate [options] \u003Cdocument\u003E",
+      "arguments": [
+        {
+          "name": "document",
+          "description": "Path to the document to validate",
+          "arity": {
+            "min": 1,
+            "max": 1
+          },
+          "valueType": "string",
+          "allowedValues": null
+        }
+      ],
+      "options": [
+        {
+          "name": "--format",
+          "aliases": [],
+          "description": "Output format: json, text",
+          "valueName": "fmt",
+          "arity": {
+            "min": 1,
+            "max": 1
+          },
+          "required": false,
+          "negatable": false,
+          "valueType": "string",
+          "allowedValues": null,
+          "recursive": false,
+          "default": "text"
+        }
+      ],
+      "subcommands": [],
+      "formats": [
+        "json",
+        "text"
+      ],
+      "defaultFormat": "text",
+      "formatConfigurable": false,
+      "outputSchema": null,
+      "exitCodes": [
+        {
+          "code": 0,
+          "meaning": "Success."
+        },
+        {
+          "code": 1,
+          "meaning": "The operation failed."
+        },
+        {
+          "code": 2,
+          "meaning": "The document is invalid, or --check found a difference."
+        }
+      ],
+      "stream": {
+        "success": "stdout",
+        "findings": "stdout"
+      },
+      "writes": false,
+      "stability": "stable"
+    },
+    {
+      "id": "describe",
+      "path": [
+        "describe"
+      ],
+      "description": "Describe the CLI contract: commands, options, exit codes, and output schemas",
+      "usage": "sqlschema describe [options] [command...]",
+      "arguments": [
+        {
+          "name": "command",
+          "description": "Optional command path, for example: md graph",
+          "arity": {
+            "min": 0,
+            "max": null
+          },
+          "valueType": "string",
+          "allowedValues": null
+        }
+      ],
+      "options": [
+        {
+          "name": "--format",
+          "aliases": [],
+          "description": "Output format: llm, human, json",
+          "valueName": "fmt",
+          "arity": {
+            "min": 1,
+            "max": 1
+          },
+          "required": false,
+          "negatable": false,
+          "valueType": "string",
+          "allowedValues": null,
+          "recursive": false,
+          "default": "llm"
+        }
+      ],
+      "subcommands": [],
+      "formats": [
+        "llm",
+        "human",
+        "json"
+      ],
+      "defaultFormat": "llm",
+      "formatConfigurable": false,
+      "outputSchema": "https://github.com/cairn-tool/cli-schema/v1/cli-schema.json",
+      "exitCodes": [
+        {
+          "code": 0,
+          "meaning": "Success."
+        },
+        {
+          "code": 1,
+          "meaning": "The operation failed."
+        },
+        {
+          "code": 2,
+          "meaning": "The document is invalid, or --check found a difference."
+        }
+      ],
+      "stream": {
+        "success": "stdout"
+      },
+      "writes": false,
+      "stability": "stable"
+    }
+  ]
+}

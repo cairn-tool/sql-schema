@@ -17,3 +17,4 @@ spec/fixtures/**
 # with anything else would rewrite them out from under that comparison, and every golden would
 # fail for a reason that has nothing to do with the schema.
 spec/conformance/
+spec/cli/

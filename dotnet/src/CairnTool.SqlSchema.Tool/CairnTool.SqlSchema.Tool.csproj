@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <!-- net8.0, not net10.0, and not multi-targeted. The consuming estate pins SDK 8.0.407 with
+         rollForward disable, and the MSBuild integration runs this very binary, so it has to start
+         on a .NET 8 runtime. RollForward lets the same binary run on a machine that only has 10. -->
+    <RollForward>LatestMajor</RollForward>
+    <Nullable>enable</Nullable>
+    <!-- ⚠️ InvariantGlobalization must stay OFF. DacFx maps a model's collation LCID to a
+         CultureInfo while deserializing the package, and under invariant globalization that throws
+         CultureNotFoundException for anything but the invariant culture — LCID 3076 in the first
+         package tried. The failure is at load time, so every command that reads a dacpac dies
+         before doing anything. It is tempting to set it on a tool this small; do not. -->
+    <InvariantGlobalization>false</InvariantGlobalization>
+
+    <!-- Transitively DacFx, so neither trimmable nor AOT-compatible. PublishAot is meaningless for
+         a DotnetTool package in any case: a tool ships as IL and is launched by the shared host. -->
+    <IsTrimmable>false</IsTrimmable>
+    <IsAotCompatible>false</IsAotCompatible>
+
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>sqlschema</ToolCommandName>
+    <PackageId>CairnTool.SqlSchema.Tool</PackageId>
+    <Authors>Bryan Stockus</Authors>
+    <Description>Command-line tool that extracts a sql-schema document from a SQL Server .dacpac.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/cairn-tool/sql-schema</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/cairn-tool/sql-schema</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>sql;schema;dacpac;sqlserver;cli</PackageTags>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- The tests drive the command tree in-process rather than shelling out, so they can assert
+         on exit codes and on both streams without a process boundary. That needs the root command
+         builder, which stays internal: a tool's entry point is not an API. -->
+    <InternalsVisibleTo Include="CairnTool.SqlSchema.Tool.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.CommandLine" />
+    <PackageReference Include="CairnTool.CliSchema.SystemCommandLine" />
+    <PackageReference Include="JsonSchema.Net" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CairnTool.SqlSchema.DacFx\CairnTool.SqlSchema.DacFx.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>

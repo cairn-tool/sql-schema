@@ -33,6 +33,16 @@ for (const file of readdirSync(FROM)
   written.push(relative(ROOT, target));
 }
 
+// The tool's own `describe` payload is a cli-schema document, not a sql-schema one, so it lives
+// apart from the conformance cases and is promoted separately.
+const cli = join(ROOT, "artifacts/cli/describe.json");
+if (existsSync(cli)) {
+  mkdirSync(join(ROOT, "spec/cli"), { recursive: true });
+  const target = join(ROOT, "spec/cli/describe.json");
+  copyFileSync(cli, target);
+  written.push(relative(ROOT, target));
+}
+
 console.log(`promoted ${written.length} golden(s):\n`);
 for (const path of written) console.log(`  ${path}`);
 console.log("\nRead `git diff spec/conformance/` before committing. A golden that changed without");

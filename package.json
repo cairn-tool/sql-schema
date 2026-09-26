@@ -43,23 +43,23 @@
     "msbuild:check": "node scripts/msbuild-integration.mjs"
   },
   "devDependencies": {
-    "@cairn-tool/cli-schema": "^1.1.0",
-    "@commitlint/cli": "^21.2.2",
+    "@cairn-tool/cli-schema": "^1.1.1",
+    "@commitlint/cli": "^21.2.3",
     "@commitlint/config-conventional": "^21.2.0",
     "@eslint/js": "^10.0.1",
     "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/exec": "^7.1.0",
     "@semantic-release/git": "^11.0.1",
-    "@semantic-release/npm": "^13.1.5",
+    "@semantic-release/npm": "^13.2.0",
     "ajv": "^8.20.0",
-    "conventional-changelog-conventionalcommits": "^9.3.1",
+    "conventional-changelog-conventionalcommits": "^10.4.0",
     "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "json-schema-to-typescript": "^16.0.0",
-    "prettier": "^3.4.0",
+    "prettier": "^3.9.9",
     "semantic-release": "^25.0.9",
-    "typescript": "^5.7.0",
-    "typescript-eslint": "^8.68.0"
+    "typescript": "^7.0.2",
+    "typescript-eslint": "^8.70.1"
   }
 }

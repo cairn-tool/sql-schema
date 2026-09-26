@@ -6,7 +6,7 @@
     <PackageVersion Include="System.CommandLine" Version="2.0.12" />
     <!-- Bounded, and never a prerelease. This tool is cli-schema's first external consumer, and a
          major there is a breaking change here. -->
-    <PackageVersion Include="CairnTool.CliSchema.SystemCommandLine" Version="[1.1.0,2.0.0)" />
+    <PackageVersion Include="CairnTool.CliSchema.SystemCommandLine" Version="[1.1.1, 2.0.0)" />
     <PackageVersion Include="JsonSchema.Net" Version="9.4.0" />
     <PackageVersion Include="Microsoft.SqlServer.DacFx" Version="170.5.96" />
     <!-- DO NOT UPGRADE PAST VERSION 6.12.0 OF FluentAssertions: The library changed to a proprietary license after that version -->
